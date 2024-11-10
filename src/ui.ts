@@ -16,9 +16,9 @@ export function updateCount(index: number, count: number) {
 }
 
 export function downloadCsv(filename: string, content: string) {
-    const blob = new Blob([content], { type: 'text/csv' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    a.click();
+    // const blob = new Blob([content], { type: 'text/csv' });
+    // const a = document.createElement('a');
+    // a.href = URL.createObjectURL(blob);
+    // a.download = filename;
+    // a.click();
 }
