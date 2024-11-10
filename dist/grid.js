@@ -3,6 +3,7 @@ export class BugGrid {
         this.grid = document.getElementById('bugGrid');
     }
     setup(bugs, onBugClick) {
+        this.grid.innerHTML = '';
         bugs.forEach((bug, index) => {
             const cell = this.createCell(bug, index);
             cell.addEventListener('click', () => onBugClick(index));

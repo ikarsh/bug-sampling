@@ -8,6 +8,7 @@ export class BugGrid {
     }
 
     setup(bugs: Bug[], onBugClick: (index: number) => void) {
+        this.grid.innerHTML = '';  
         bugs.forEach((bug, index) => {
             const cell = this.createCell(bug, index);
             cell.addEventListener('click', () => onBugClick(index));
