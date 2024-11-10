@@ -1,0 +1,19 @@
+/* styles/base.css - Base styles shared across the app */
+* { 
+    touch-action: manipulation;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+.screen[data-active="false"] {
+    display: none;
+}
+
+.screen[data-active="true"] {
+    display: block;
+}
