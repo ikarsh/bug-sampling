@@ -18,11 +18,21 @@ export class BugGrid {
     private createCell(bug: Bug, index: number): HTMLElement {
         const cell = document.createElement('div');
         cell.className = 'bug-cell';
-        cell.innerHTML = `
-            <span class="bug-name">${bug.name}</span>
-            <img src="${bug.image}" alt="${bug.name}">
-            <span class="bug-count" id="count-${index}">0</span>
-        `;
+        
+        const name = document.createElement('span');
+        name.className = 'bug-name';
+        name.textContent = bug.name;
+        
+        const img = document.createElement('img');
+        img.src = bug.image;
+        img.alt = bug.name;
+        
+        const count = document.createElement('span');
+        count.className = 'bug-count';
+        count.id = `count-${index}`;
+        count.textContent = '0';
+        
+        cell.append(name, img, count);
         return cell;
     }
 }
