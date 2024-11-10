@@ -1,41 +1,6 @@
-import { bugTypes } from './models/bugTypes.js';
-import { SamplingSession } from './models/samplingSession.js';
-
-// Interface definitions
-interface HTMLElementWithDataset extends HTMLElement {
-    dataset: {
-        screen: string;
-        active: string;
-    };
-}
-
-interface Screen extends HTMLElementWithDataset {
-    dataset: {
-        screen: string;
-        active: string;
-    };
-}
-
-export class ScreenManager {
-    private screens: NodeListOf<Screen>;
-
-    constructor() {
-        this.screens = document.querySelectorAll<Screen>('.screen');
-    }
-
-    showScreen(screenName: string): void {
-        this.screens.forEach(screen => {
-            const isTarget = screen.dataset.screen === screenName;
-            screen.dataset.active = isTarget.toString();
-        });
-    }
-
-    getCurrentScreen(): string | undefined {
-        return Array.from(this.screens).find(screen => 
-            screen.dataset.active === "true"
-        )?.dataset.screen;
-    }
-}
+import { ScreenManager } from './managers/ScreenManager.js';
+import { bugTypes } from './models/BugTypes.js';
+import { SamplingSession } from './models/SamplingSession.js';
 
 // Global state management
 let currentSession: SamplingSession | null = null;

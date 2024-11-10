@@ -1,4 +1,4 @@
-import { bugTypes } from './bugTypes.js';
+import { bugTypes } from './BugTypes.js';
 import { Location, SamplingData } from './types.js';
 
 export class SamplingSession {

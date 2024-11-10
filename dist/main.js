@@ -1,19 +1,6 @@
-import { bugTypes } from './models/bugTypes.js';
-import { SamplingSession } from './models/samplingSession.js';
-export class ScreenManager {
-    constructor() {
-        this.screens = document.querySelectorAll('.screen');
-    }
-    showScreen(screenName) {
-        this.screens.forEach(screen => {
-            const isTarget = screen.dataset.screen === screenName;
-            screen.dataset.active = isTarget.toString();
-        });
-    }
-    getCurrentScreen() {
-        return Array.from(this.screens).find(screen => screen.dataset.active === "true")?.dataset.screen;
-    }
-}
+import { ScreenManager } from './managers/ScreenManager.js';
+import { bugTypes } from './models/BugTypes.js';
+import { SamplingSession } from './models/SamplingSession.js';
 // Global state management
 let currentSession = null;
 let timerInterval = null;
