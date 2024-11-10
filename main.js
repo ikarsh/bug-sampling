@@ -1,31 +1,4 @@
-
-// Bug data - in real app, this would come from a database
-const bugTypes = [
-    { name: "Ladybug", image: "/api/placeholder/60/60" },
-    { name: "Butterfly", image: "/api/placeholder/60/60" },
-    { name: "Ant", image: "/api/placeholder/60/60" },
-    { name: "Beetle", image: "/api/placeholder/60/60" },
-    { name: "Grasshopper", image: "/api/placeholder/60/60" },
-    { name: "Mantis", image: "/api/placeholder/60/60" },
-    { name: "Moth", image: "/api/placeholder/60/60" },
-    { name: "Spider", image: "/api/placeholder/60/60" },
-    { name: "Wasp", image: "/api/placeholder/60/60" },
-    { name: "Bee", image: "/api/placeholder/60/60" },
-    { name: "Cricket", image: "/api/placeholder/60/60" },
-    { name: "Dragonfly", image: "/api/placeholder/60/60" },
-    { name: "Firefly", image: "/api/placeholder/60/60" },
-    { name: "Cicada", image: "/api/placeholder/60/60" },
-    { name: "Centipede", image: "/api/placeholder/60/60" },
-    { name: "Millipede", image: "/api/placeholder/60/60" },
-    { name: "Caterpillar", image: "/api/placeholder/60/60" },
-    { name: "Earwig", image: "/api/placeholder/60/60" },
-    { name: "Mosquito", image: "/api/placeholder/60/60" },
-    { name: "Fly", image: "/api/placeholder/60/60" },
-    { name: "Stinkbug", image: "/api/placeholder/60/60" },
-    { name: "Aphid", image: "/api/placeholder/60/60" },
-    { name: "Termite", image: "/api/placeholder/60/60" },
-    { name: "Pill Bug", image: "/api/placeholder/60/60" }
-];
+import { bugTypes } from './utils.js';
 
 class SamplingSession {
     constructor(name, duration) {
@@ -33,10 +6,9 @@ class SamplingSession {
         this.duration = duration;
         this.startTime = new Date();
         this.counts = new Array(bugTypes.length).fill(0);
-        this.actions = []; // For undo functionality
+        this.actions = [];
         this.location = null;
         
-        // Get location
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 position => {
@@ -77,7 +49,6 @@ class SamplingSession {
             }))
         };
 
-        // Convert to CSV
         let csv = "Sampling Name,Start Time,Duration (s),Latitude,Longitude\n";
         csv += `${data.name},${data.startTime},${data.duration},`;
         csv += `${data.location ? data.location.latitude : 'N/A'},`;
@@ -92,12 +63,33 @@ class SamplingSession {
     }
 }
 
+class ScreenManager {
+    constructor() {
+        this.screens = document.querySelectorAll('.screen');
+    }
+
+    showScreen(screenName) {
+        this.screens.forEach(screen => {
+            const isTarget = screen.dataset.screen === screenName;
+            screen.dataset.active = isTarget;
+        });
+    }
+
+    getCurrentScreen() {
+        return Array.from(this.screens).find(screen => 
+            screen.dataset.active === "true"
+        )?.dataset.screen;
+    }
+}
+
 let currentSession = null;
 let timerInterval = null;
+const screenManager = new ScreenManager();
 
-// Setup the bug grid
 function setupGrid() {
     const grid = document.getElementById('bugGrid');
+    if (!grid) return;
+
     bugTypes.forEach((bug, index) => {
         const cell = document.createElement('div');
         cell.className = 'bug-cell';
@@ -119,7 +111,7 @@ function setupGrid() {
 }
 
 // Setup undo button
-document.getElementById('undoButton').addEventListener('click', () => {
+document.getElementById('undoButton')?.addEventListener('click', () => {
     if (currentSession) {
         const undoneIndex = currentSession.undo();
         if (undoneIndex !== null) {
@@ -130,17 +122,14 @@ document.getElementById('undoButton').addEventListener('click', () => {
 });
 
 // Setup form submission
-document.getElementById('samplingForm').addEventListener('submit', (e) => {
+document.getElementById('samplingForm')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('samplingName').value;
     const duration = parseInt(document.getElementById('duration').value);
     
     // Start new session
     currentSession = new SamplingSession(name, duration);
-    
-    // Switch screens
-    document.getElementById('setupScreen').style.display = 'none';
-    document.getElementById('samplingScreen').style.display = 'block';
+    screenManager.showScreen('sampling');
     
     // Start timer
     let timeLeft = duration;
@@ -173,9 +162,8 @@ function endSampling() {
     
     // Reset for new sampling
     currentSession = null;
-    document.getElementById('samplingScreen').style.display = 'none';
-    document.getElementById('setupScreen').style.display = 'block';
-    document.getElementById('samplingForm').reset();
+    screenManager.showScreen('setup');
+    document.getElementById('samplingForm')?.reset();
     
     // Reset counts
     bugTypes.forEach((_, index) => {
@@ -184,70 +172,6 @@ function endSampling() {
 }
 
 // Initialize the grid when the page loads
-setupGrid();
-
-
-class ScreenManager {
-    constructor() {
-        this.screens = document.querySelectorAll('.screen');
-    }
-
-    showScreen(screenName) {
-        this.screens.forEach(screen => {
-            const isTarget = screen.dataset.screen === screenName;
-            screen.dataset.active = isTarget;
-        });
-    }
-
-    getCurrentScreen() {
-        return Array.from(this.screens).find(screen => 
-            screen.dataset.active === "true"
-        )?.dataset.screen;
-    }
-}
-
-// Initialize screen manager
-const screenManager = new ScreenManager();
-
-// Update the form submission handler
-document.getElementById('samplingForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('samplingName').value;
-    const duration = parseInt(document.getElementById('duration').value);
-    
-    // Start new session
-    currentSession = new SamplingSession(name, duration);
-    
-    // Switch screens using screen manager
-    screenManager.showScreen('sampling');
-    
-    // Start timer
-    let timeLeft = duration;
-    const timerDisplay = document.getElementById('timer');
-    
-    timerInterval = setInterval(() => {
-        timeLeft--;
-        timerDisplay.textContent = `Time remaining: ${timeLeft}s`;
-        
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            endSampling();
-        }
-    }, 1000);
+document.addEventListener('DOMContentLoaded', () => {
+    setupGrid();
 });
-
-function endSampling() {
-    if (!currentSession) return;
-    
-    // ... existing CSV generation code ...
-    
-    // Reset for new sampling using screen manager
-    currentSession = null;
-    screenManager.showScreen('setup');
-    document.getElementById('samplingForm').reset();
-    
-    // Reset counts
-    bugTypes.forEach((_, index) => {
-        document.getElementById(`count-${index}`).textContent = '0';
-    });
-}
