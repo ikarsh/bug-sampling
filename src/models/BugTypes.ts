@@ -1,4 +1,4 @@
-import { BugType } from "./types";
+import { BugType } from "../types";
 
 // Bug data - in real app, this would come from a database
 export const bugTypes: BugType[] = [

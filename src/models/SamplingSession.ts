@@ -1,5 +1,5 @@
 import { bugTypes } from './BugTypes.js';
-import { Location, SamplingData } from './types.js';
+import { Location, SamplingData } from '../types.js';
 
 export class SamplingSession {
     public readonly name: string;
