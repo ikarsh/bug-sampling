@@ -1,35 +1,12 @@
-export interface BugType {
-    name: string;
-    image: string;
-  }
-  
-  export interface Location {
-    latitude: number;
-    longitude: number;
-  }
-  
-  export interface SamplingData {
-    name: string;
-    startTime: string;
-    duration: number;
-    location: Location | null;
-    counts: Array<{
-      bugType: string;
-      count: number;
-    }>;
-  }
+// types.ts
+export interface Bug {
+  name: string;
+  image: string;
+}
 
-  
-  export interface HTMLElementWithDataset extends HTMLElement {
-    dataset: {
-      screen: string;
-      active: string;
-    };
-  }
-  
-  export interface Screen extends HTMLElementWithDataset {
-    dataset: {
-      screen: string;
-      active: string;
-    };
-  }
+export interface Session {
+  name: string;
+  duration: number;
+  counts: number[];
+  actions: number[];
+}

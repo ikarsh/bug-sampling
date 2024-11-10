@@ -1,17 +1,14 @@
-import { ScreenManager } from './managers/ScreenManager.js';
-import { bugTypes } from './models/BugTypes.js';
-import { SamplingSession } from './models/SamplingSession.js';
+// main.ts
+import { bugs } from './bugs.js';
+import { BugSession } from './session.js';
+import { showScreen, updateCount, downloadCsv } from './ui.js';
 
-// Global state management
-let currentSession: SamplingSession | null = null;
-let timerInterval: number | null = null;
-const screenManager = new ScreenManager();
+let currentSession: BugSession | null = null;
 
-function setupGrid(): void {
-    const grid = document.getElementById('bugGrid');
-    if (!grid) return;
-
-    bugTypes.forEach((bug, index) => {
+function setupGrid() {
+    const grid = document.getElementById('bugGrid')!;
+    
+    bugs.forEach((bug, index) => {
         const cell = document.createElement('div');
         cell.className = 'bug-cell';
         cell.innerHTML = `
@@ -22,11 +19,8 @@ function setupGrid(): void {
         
         cell.addEventListener('click', () => {
             if (currentSession) {
-                const newCount = currentSession.incrementBug(index);
-                const countElement = document.getElementById(`count-${index}`);
-                if (countElement) {
-                    countElement.textContent = newCount.toString();
-                }
+                const count = currentSession.increment(index);
+                updateCount(index, count);
             }
         });
         
@@ -34,100 +28,44 @@ function setupGrid(): void {
     });
 }
 
-function setupUndoButton(): void {
-    const undoButton = document.getElementById('undoButton');
-    undoButton?.addEventListener('click', () => {
-        if (currentSession) {
-            const undoneIndex = currentSession.undo();
-            if (undoneIndex !== null) {
-                const countElement = document.getElementById(`count-${undoneIndex}`);
-                if (countElement) {
-                    countElement.textContent = currentSession.counts[undoneIndex].toString();
-                }
-            }
-        }
-    });
-}
-
-function setupSamplingForm(): void {
-    const form = document.getElementById('samplingForm');
-    form?.addEventListener('submit', (e: Event) => {
+function setupForm() {
+    const form = document.getElementById('samplingForm')!;
+    
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
+        const name = (document.getElementById('samplingName') as HTMLInputElement).value;
+        const duration = parseInt((document.getElementById('duration') as HTMLInputElement).value);
         
-        const nameInput = document.getElementById('samplingName') as HTMLInputElement;
-        const durationInput = document.getElementById('duration') as HTMLInputElement;
+        currentSession = new BugSession(name, duration);
+        currentSession.startTimer(() => {
+            if (currentSession) {
+                const csv = currentSession.generateCsv();
+                downloadCsv(`bugs_${currentSession.name}.csv`, csv);
+                currentSession = null;
+                showScreen('setup');
+            }
+        });
         
-        if (!nameInput || !durationInput) return;
-        
-        const name = nameInput.value;
-        const duration = parseInt(durationInput.value);
-        
-        startNewSession(name, duration);
+        showScreen('sampling');
     });
 }
 
-function startNewSession(name: string, duration: number): void {
-    // Clear any existing timer
-    if (timerInterval !== null) {
-        clearInterval(timerInterval);
-    }
+function setupUndo() {
+    const undoBtn = document.getElementById('undoButton')!;
     
-    // Start new session
-    currentSession = new SamplingSession(name, duration);
-    screenManager.showScreen('sampling');
-    
-    // Start timer
-    let timeLeft = duration;
-    const timerDisplay = document.getElementById('timer');
-    
-    if (timerDisplay) {
-        timerInterval = window.setInterval(() => {
-            timeLeft--;
-            timerDisplay.textContent = `Time remaining: ${timeLeft}s`;
-            
-            if (timeLeft <= 0) {
-                if (timerInterval !== null) {
-                    clearInterval(timerInterval);
-                }
-                endSampling();
+    undoBtn.addEventListener('click', () => {
+        if (currentSession) {
+            const index = currentSession.undo();
+            if (index !== null) {
+                updateCount(index, currentSession.counts[index]);
             }
-        }, 1000);
-    }
-}
-
-function endSampling(): void {
-    if (!currentSession) return;
-    
-    const csv = currentSession.generateReport();
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `sampling_${currentSession.name}.csv`);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    
-    // Reset for new sampling
-    currentSession = null;
-    screenManager.showScreen('setup');
-    
-    const form = document.getElementById('samplingForm') as HTMLFormElement;
-    form?.reset();
-    
-    // Reset counts
-    bugTypes.forEach((_, index) => {
-        const countElement = document.getElementById(`count-${index}`);
-        if (countElement) {
-            countElement.textContent = '0';
         }
     });
 }
 
-// Initialize when the page loads
+// Initialize everything
 document.addEventListener('DOMContentLoaded', () => {
     setupGrid();
-    setupUndoButton();
-    setupSamplingForm();
+    setupForm();
+    setupUndo();
 });

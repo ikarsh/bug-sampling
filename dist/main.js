@@ -1,15 +1,11 @@
-import { ScreenManager } from './managers/ScreenManager.js';
-import { bugTypes } from './models/BugTypes.js';
-import { SamplingSession } from './models/SamplingSession.js';
-// Global state management
+// main.ts
+import { bugs } from './bugs.js';
+import { BugSession } from './session.js';
+import { showScreen, updateCount, downloadCsv } from './ui.js';
 let currentSession = null;
-let timerInterval = null;
-const screenManager = new ScreenManager();
 function setupGrid() {
     const grid = document.getElementById('bugGrid');
-    if (!grid)
-        return;
-    bugTypes.forEach((bug, index) => {
+    bugs.forEach((bug, index) => {
         const cell = document.createElement('div');
         cell.className = 'bug-cell';
         cell.innerHTML = `
@@ -19,97 +15,45 @@ function setupGrid() {
         `;
         cell.addEventListener('click', () => {
             if (currentSession) {
-                const newCount = currentSession.incrementBug(index);
-                const countElement = document.getElementById(`count-${index}`);
-                if (countElement) {
-                    countElement.textContent = newCount.toString();
-                }
+                const count = currentSession.increment(index);
+                updateCount(index, count);
             }
         });
         grid.appendChild(cell);
     });
 }
-function setupUndoButton() {
-    const undoButton = document.getElementById('undoButton');
-    undoButton?.addEventListener('click', () => {
-        if (currentSession) {
-            const undoneIndex = currentSession.undo();
-            if (undoneIndex !== null) {
-                const countElement = document.getElementById(`count-${undoneIndex}`);
-                if (countElement) {
-                    countElement.textContent = currentSession.counts[undoneIndex].toString();
-                }
-            }
-        }
-    });
-}
-function setupSamplingForm() {
+function setupForm() {
     const form = document.getElementById('samplingForm');
-    form?.addEventListener('submit', (e) => {
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const nameInput = document.getElementById('samplingName');
-        const durationInput = document.getElementById('duration');
-        if (!nameInput || !durationInput)
-            return;
-        const name = nameInput.value;
-        const duration = parseInt(durationInput.value);
-        startNewSession(name, duration);
+        const name = document.getElementById('samplingName').value;
+        const duration = parseInt(document.getElementById('duration').value);
+        currentSession = new BugSession(name, duration);
+        currentSession.startTimer(() => {
+            if (currentSession) {
+                const csv = currentSession.generateCsv();
+                downloadCsv(`bugs_${currentSession.name}.csv`, csv);
+                currentSession = null;
+                showScreen('setup');
+            }
+        });
+        showScreen('sampling');
     });
 }
-function startNewSession(name, duration) {
-    // Clear any existing timer
-    if (timerInterval !== null) {
-        clearInterval(timerInterval);
-    }
-    // Start new session
-    currentSession = new SamplingSession(name, duration);
-    screenManager.showScreen('sampling');
-    // Start timer
-    let timeLeft = duration;
-    const timerDisplay = document.getElementById('timer');
-    if (timerDisplay) {
-        timerInterval = window.setInterval(() => {
-            timeLeft--;
-            timerDisplay.textContent = `Time remaining: ${timeLeft}s`;
-            if (timeLeft <= 0) {
-                if (timerInterval !== null) {
-                    clearInterval(timerInterval);
-                }
-                endSampling();
+function setupUndo() {
+    const undoBtn = document.getElementById('undoButton');
+    undoBtn.addEventListener('click', () => {
+        if (currentSession) {
+            const index = currentSession.undo();
+            if (index !== null) {
+                updateCount(index, currentSession.counts[index]);
             }
-        }, 1000);
-    }
-}
-function endSampling() {
-    if (!currentSession)
-        return;
-    const csv = currentSession.generateReport();
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `sampling_${currentSession.name}.csv`);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    // Reset for new sampling
-    currentSession = null;
-    screenManager.showScreen('setup');
-    const form = document.getElementById('samplingForm');
-    form?.reset();
-    // Reset counts
-    bugTypes.forEach((_, index) => {
-        const countElement = document.getElementById(`count-${index}`);
-        if (countElement) {
-            countElement.textContent = '0';
         }
     });
 }
-// Initialize when the page loads
+// Initialize everything
 document.addEventListener('DOMContentLoaded', () => {
     setupGrid();
-    setupUndoButton();
-    setupSamplingForm();
+    setupForm();
+    setupUndo();
 });
-//# sourceMappingURL=main.js.map

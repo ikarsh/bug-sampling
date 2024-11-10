@@ -1,5 +1,7 @@
-// Bug data - in real app, this would come from a database
-export const bugTypes = [
+
+import { Bug } from './types.js';
+
+export const bugs: Bug[] = [
     { name: "Ladybug", image: "/api/placeholder/60/60" },
     { name: "Butterfly", image: "/api/placeholder/60/60" },
     { name: "Ant", image: "/api/placeholder/60/60" },
@@ -25,4 +27,4 @@ export const bugTypes = [
     { name: "Termite", image: "/api/placeholder/60/60" },
     { name: "Pill Bug", image: "/api/placeholder/60/60" }
 ];
-//# sourceMappingURL=bugTypes.js.map
+
