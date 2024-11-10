@@ -25,4 +25,4 @@ export const bugTypes = [
     { name: "Termite", image: "/api/placeholder/60/60" },
     { name: "Pill Bug", image: "/api/placeholder/60/60" }
 ];
-
+//# sourceMappingURL=bugTypes.js.map

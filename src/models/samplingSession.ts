@@ -1,6 +1,16 @@
-import { bugTypes } from './BugTypes.js';
+import { bugTypes } from './bugTypes.js';
+import { Location, SamplingData } from './types.js';
+
 export class SamplingSession {
-    constructor(name, duration) {
+    public readonly name: string;
+    private readonly duration: number;
+    private readonly startTime: Date;
+    // Note: only the reference is readonly, array contents can still be modified
+    public readonly counts: number[];
+    private readonly actions: number[];
+    private location: Location | null;
+
+    constructor(name: string, duration: number) {
         this.name = name;
         this.duration = duration;
         this.startTime = new Date();
@@ -10,34 +20,34 @@ export class SamplingSession {
         
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                position => {
+                (position: GeolocationPosition) => {
                     this.location = {
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
                     };
                 },
-                error => console.error("Error getting location:", error)
+                (error: GeolocationPositionError) => console.error("Error getting location:", error)
             );
         }
     }
 
-    incrementBug(index) {
+    incrementBug(index: number): number {
         this.counts[index]++;
         this.actions.push(index);
         return this.counts[index];
     }
 
-    undo() {
+    undo(): number | null {
         if (this.actions.length > 0) {
-            const lastIndex = this.actions.pop();
+            const lastIndex = this.actions.pop()!;
             this.counts[lastIndex]--;
             return lastIndex;
         }
         return null;
     }
 
-    generateReport() {
-        const data = {
+    generateReport(): string {
+        const data: SamplingData = {
             name: this.name,
             startTime: this.startTime.toISOString(),
             duration: this.duration,
