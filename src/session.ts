@@ -6,7 +6,6 @@ export class BugSession implements Session {
     public actions: number[];
 
     constructor(
-        public name: string,
         public duration: number
     ) {
         this.counts = new Array(bugs.length).fill(0);

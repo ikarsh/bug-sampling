@@ -5,7 +5,6 @@ export interface Bug {
 }
 
 export interface Session {
-  name: string;
   duration: number;
   counts: number[];
   actions: number[];

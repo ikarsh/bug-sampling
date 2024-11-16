@@ -1,7 +1,6 @@
 import { bugs } from './bugs.js';
 export class BugSession {
-    constructor(name, duration) {
-        this.name = name;
+    constructor(duration) {
         this.duration = duration;
         this.counts = new Array(bugs.length).fill(0);
         this.actions = [];
