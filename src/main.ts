@@ -24,8 +24,10 @@ document.getElementById('samplingForm')?.addEventListener('submit', (e) => {
     e.preventDefault();
     
     const setup = setupHandler.getCurrentSetup();
+    // Generate a meaningful name using timestamp
+    const sessionName = `sampling_${setup.site}_${setup.date.getTime()}`;
+    currentSession = new BugSession(sessionName, setup.samplingLength);
     
-    currentSession = new BugSession(setup.site, setup.samplingLength);
     grid.setup(bugs, (index) => {
         if (currentSession) {
             const count = currentSession.increment(index);

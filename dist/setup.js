@@ -3,6 +3,7 @@ import { SITES, SAMPLING_TYPES } from './types.js';
 export class SetupHandler {
     constructor() {
         this.locationWatchId = null;
+        this.currentLocation = 'N/A';
         this.initializeForm();
         this.startLocationTracking();
     }
@@ -13,6 +14,11 @@ export class SetupHandler {
         const hourInput = document.getElementById('samplingHour');
         dateInput.value = now.toLocaleDateString();
         hourInput.value = now.toLocaleTimeString();
+        // Initialize location as N/A
+        const locationInput = document.getElementById('location');
+        const statusSpan = document.getElementById('locationStatus');
+        locationInput.value = 'N/A';
+        statusSpan.textContent = '(No location available)';
         // Populate dropdowns
         const siteSelect = document.getElementById('site');
         const typeSelect = document.getElementById('type');
@@ -28,25 +34,42 @@ export class SetupHandler {
             option.textContent = type;
             typeSelect.appendChild(option);
         });
+        // Update time every second
+        setInterval(() => {
+            const now = new Date();
+            hourInput.value = now.toLocaleTimeString();
+        }, 1000);
     }
     startLocationTracking() {
         if ('geolocation' in navigator) {
             const locationInput = document.getElementById('location');
             const statusSpan = document.getElementById('locationStatus');
             this.locationWatchId = navigator.geolocation.watchPosition((position) => {
-                const { latitude, longitude } = position.coords;
-                locationInput.value = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+                this.currentLocation = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+                locationInput.value = `${this.currentLocation.latitude.toFixed(6)}, ${this.currentLocation.longitude.toFixed(6)}`;
                 statusSpan.textContent = '✓';
             }, (error) => {
-                statusSpan.textContent = `(Error: ${error.message})`;
-            });
+                this.currentLocation = 'N/A';
+                locationInput.value = 'N/A';
+                statusSpan.textContent = `(No location available)`;
+            }, { timeout: 5000 } // Add a reasonable timeout
+            );
+        }
+        else {
+            // Browser doesn't support geolocation
+            const locationInput = document.getElementById('location');
+            const statusSpan = document.getElementById('locationStatus');
+            locationInput.value = 'N/A';
+            statusSpan.textContent = '(Geolocation not supported)';
         }
     }
     getCurrentSetup() {
         return {
-            date: document.getElementById('samplingDate').value,
-            hour: document.getElementById('samplingHour').value,
-            location: document.getElementById('location').value,
+            date: new Date(),
+            location: this.currentLocation,
             site: document.getElementById('site').value,
             type: document.getElementById('type').value,
             samplingLength: parseInt(document.getElementById('samplingLength').value)
