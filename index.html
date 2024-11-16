@@ -13,24 +13,50 @@
     <div class="screen" data-screen="setup" data-active="true">
         <form class="setup-form" id="samplingForm">
             <div class="form-group">
-                <label for="samplingName">Sampling Name</label>
+                <label>Date</label>
                 <div class="input-container">
-                    <input type="text" id="samplingName" placeholder="e.g., Morning Garden Survey" value="Bla" required>
+                    <input type="text" id="samplingDate" readonly>
                 </div>
             </div>
             
             <div class="form-group">
-                <label for="duration">Duration</label>
+                <label>Hour</label>
                 <div class="input-container">
-                    <input type="number" id="duration" value="7" min="1" required>
-                    <span class="unit">seconds</span>
+                    <input type="text" id="samplingHour" readonly>
                 </div>
             </div>
-    
+        
             <div class="form-group">
-                <label for="location">Location</label>
+                <label>Location</label>
                 <div class="input-container">
-                    <input type="text" id="location" placeholder="e.g., North Garden" value="Bla">
+                    <input type="text" id="location" readonly>
+                    <span id="locationStatus">(Detecting...)</span>
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <label for="site">Site</label>
+                <div class="input-container">
+                    <select id="site" required>
+                        <option value="">Select a site</option>
+                    </select>
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <label for="type">Type</label>
+                <div class="input-container">
+                    <select id="type" required>
+                        <option value="">Select a type</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="samplingLength">Duration</label>
+                <div class="input-container">
+                    <input type="number" id="samplingLength" value="10" min="1" required>
+                    <span class="unit">seconds</span>
                 </div>
             </div>
             
