@@ -1,25 +1,25 @@
-// setup.ts
-import { SITES, TREATMENTS as SAMPLING_TREATMENTS } from './types.js';
+import { SITES, TREATMENTS } from './types.js';
+import { LocationTracker } from './locationTracker.js';
 export class SetupHandler {
     constructor() {
-        this.locationWatchId = null;
-        this.currentLocation = 'N/A';
+        this.locationTracker = new LocationTracker();
         this.initializeForm();
-        this.startLocationTracking();
     }
     initializeForm() {
-        // Set current date and time
+        this.initializeDateAndTime();
+        this.populateDropdowns();
+    }
+    initializeDateAndTime() {
         const now = new Date();
         const dateInput = document.getElementById('samplingDate');
         const hourInput = document.getElementById('samplingHour');
         dateInput.value = now.toLocaleDateString();
         hourInput.value = now.toLocaleTimeString();
-        // Initialize location as N/A
-        const locationInput = document.getElementById('location');
-        const statusSpan = document.getElementById('locationStatus');
-        locationInput.value = 'N/A';
-        statusSpan.textContent = '(No location available)';
-        // Populate dropdowns
+        setInterval(() => {
+            hourInput.value = new Date().toLocaleTimeString();
+        }, 1000);
+    }
+    populateDropdowns() {
         const siteSelect = document.getElementById('site');
         const treatmentSelect = document.getElementById('treatment');
         SITES.forEach(site => {
@@ -28,56 +28,23 @@ export class SetupHandler {
             option.textContent = site;
             siteSelect.appendChild(option);
         });
-        SAMPLING_TREATMENTS.forEach(treatment => {
+        TREATMENTS.forEach(treatment => {
             const option = document.createElement('option');
             option.value = treatment;
             option.textContent = treatment;
             treatmentSelect.appendChild(option);
         });
-        // Update time every second
-        setInterval(() => {
-            const now = new Date();
-            hourInput.value = now.toLocaleTimeString();
-        }, 1000);
-    }
-    startLocationTracking() {
-        if ('geolocation' in navigator) {
-            const locationInput = document.getElementById('location');
-            const statusSpan = document.getElementById('locationStatus');
-            this.locationWatchId = navigator.geolocation.watchPosition((position) => {
-                this.currentLocation = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                };
-                locationInput.value = `${this.currentLocation.latitude.toFixed(6)}, ${this.currentLocation.longitude.toFixed(6)}`;
-                statusSpan.textContent = '✓';
-            }, (error) => {
-                this.currentLocation = 'N/A';
-                locationInput.value = 'N/A';
-                statusSpan.textContent = `(No location available)`;
-            }, { timeout: 5000 } // Add a reasonable timeout
-            );
-        }
-        else {
-            // Browser doesn't support geolocation
-            const locationInput = document.getElementById('location');
-            const statusSpan = document.getElementById('locationStatus');
-            locationInput.value = 'N/A';
-            statusSpan.textContent = '(Geolocation not supported)';
-        }
     }
     getCurrentSetup() {
         return {
             date: new Date(),
-            location: this.currentLocation,
+            location: this.locationTracker.getCurrentLocation(),
             site: document.getElementById('site').value,
             treatment: document.getElementById('treatment').value,
             samplingLength: parseInt(document.getElementById('samplingLength').value)
         };
     }
     cleanup() {
-        if (this.locationWatchId !== null) {
-            navigator.geolocation.clearWatch(this.locationWatchId);
-        }
+        this.locationTracker.cleanup();
     }
 }

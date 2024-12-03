@@ -1,17 +1,20 @@
-// setup.ts
-import { SamplingSetup, SITES, TREATMENTS as SAMPLING_TREATMENTS, Coordinates, Location, Treatment } from './types.js';
+import { SamplingSetup, SITES, TREATMENTS, Treatment } from './types.js';
+import { LocationTracker } from './locationTracker.js';
 
 export class SetupHandler {
-    private locationWatchId: number | null = null;
-    private currentLocation: Location = 'N/A';
+    private locationTracker: LocationTracker;
 
     constructor() {
+        this.locationTracker = new LocationTracker();
         this.initializeForm();
-        this.startLocationTracking();
     }
 
     private initializeForm() {
-        // Set current date and time
+        this.initializeDateAndTime();
+        this.populateDropdowns();
+    }
+
+    private initializeDateAndTime() {
         const now = new Date();
         const dateInput = document.getElementById('samplingDate') as HTMLInputElement;
         const hourInput = document.getElementById('samplingHour') as HTMLInputElement;
@@ -19,13 +22,12 @@ export class SetupHandler {
         dateInput.value = now.toLocaleDateString();
         hourInput.value = now.toLocaleTimeString();
 
-        // Initialize location as N/A
-        const locationInput = document.getElementById('location') as HTMLInputElement;
-        const statusSpan = document.getElementById('locationStatus') as HTMLSpanElement;
-        locationInput.value = 'N/A';
-        statusSpan.textContent = '(No location available)';
+        setInterval(() => {
+            hourInput.value = new Date().toLocaleTimeString();
+        }, 1000);
+    }
 
-        // Populate dropdowns
+    private populateDropdowns() {
         const siteSelect = document.getElementById('site') as HTMLSelectElement;
         const treatmentSelect = document.getElementById('treatment') as HTMLSelectElement;
 
@@ -36,54 +38,18 @@ export class SetupHandler {
             siteSelect.appendChild(option);
         });
 
-        SAMPLING_TREATMENTS.forEach(treatment => {
+        TREATMENTS.forEach(treatment => {
             const option = document.createElement('option');
             option.value = treatment;
             option.textContent = treatment;
             treatmentSelect.appendChild(option);
         });
-
-        // Update time every second
-        setInterval(() => {
-            const now = new Date();
-            hourInput.value = now.toLocaleTimeString();
-        }, 1000);
-    }
-
-    private startLocationTracking() {
-        if ('geolocation' in navigator) {
-            const locationInput = document.getElementById('location') as HTMLInputElement;
-            const statusSpan = document.getElementById('locationStatus') as HTMLSpanElement;
-
-            this.locationWatchId = navigator.geolocation.watchPosition(
-                (position) => {
-                    this.currentLocation = {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
-                    };
-                    locationInput.value = `${this.currentLocation.latitude.toFixed(6)}, ${this.currentLocation.longitude.toFixed(6)}`;
-                    statusSpan.textContent = '✓';
-                },
-                (error) => {
-                    this.currentLocation = 'N/A';
-                    locationInput.value = 'N/A';
-                    statusSpan.textContent = `(No location available)`;
-                },
-                { timeout: 5000 } // Add a reasonable timeout
-            );
-        } else {
-            // Browser doesn't support geolocation
-            const locationInput = document.getElementById('location') as HTMLInputElement;
-            const statusSpan = document.getElementById('locationStatus') as HTMLSpanElement;
-            locationInput.value = 'N/A';
-            statusSpan.textContent = '(Geolocation not supported)';
-        }
     }
 
     public getCurrentSetup(): SamplingSetup {
         return {
             date: new Date(),
-            location: this.currentLocation,
+            location: this.locationTracker.getCurrentLocation(),
             site: (document.getElementById('site') as HTMLSelectElement).value as SamplingSetup['site'],
             treatment: (document.getElementById('treatment') as HTMLSelectElement).value as Treatment,
             samplingLength: parseInt((document.getElementById('samplingLength') as HTMLInputElement).value)
@@ -91,8 +57,6 @@ export class SetupHandler {
     }
 
     public cleanup() {
-        if (this.locationWatchId !== null) {
-            navigator.geolocation.clearWatch(this.locationWatchId);
-        }
+        this.locationTracker.cleanup();
     }
 }
