@@ -10,14 +10,17 @@ export class SetupHandler {
         this.populateDropdowns();
     }
     initializeDateAndTime() {
-        const now = new Date();
         const dateInput = document.getElementById('samplingDate');
         const hourInput = document.getElementById('samplingHour');
-        dateInput.value = now.toLocaleDateString();
-        hourInput.value = now.toLocaleTimeString();
-        setInterval(() => {
-            hourInput.value = new Date().toLocaleTimeString();
-        }, 1000);
+        const updateDateTime = () => {
+            const now = new Date();
+            dateInput.value = now.toLocaleDateString();
+            hourInput.value = now.toLocaleTimeString();
+        };
+        // set initial values
+        updateDateTime();
+        // update both every second
+        setInterval(updateDateTime, 1000);
     }
     populateDropdowns() {
         const siteSelect = document.getElementById('site');

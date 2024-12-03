@@ -15,16 +15,20 @@ export class SetupHandler {
     }
 
     private initializeDateAndTime() {
-        const now = new Date();
         const dateInput = document.getElementById('samplingDate') as HTMLInputElement;
         const hourInput = document.getElementById('samplingHour') as HTMLInputElement;
         
-        dateInput.value = now.toLocaleDateString();
-        hourInput.value = now.toLocaleTimeString();
+        const updateDateTime = () => {
+            const now = new Date();
+            dateInput.value = now.toLocaleDateString();
+            hourInput.value = now.toLocaleTimeString();
+        };
 
-        setInterval(() => {
-            hourInput.value = new Date().toLocaleTimeString();
-        }, 1000);
+        // set initial values
+        updateDateTime();
+        
+        // update both every second
+        setInterval(updateDateTime, 1000);
     }
 
     private populateDropdowns() {
