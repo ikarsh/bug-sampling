@@ -11,7 +11,8 @@ export interface Session {
 }
 
 export interface SubSession {
-  wasRaining: boolean;
+  phenologicalState: number;
+  femaleFlowerPercentage: number;
   counts: number[];
   actions: number[];
 }

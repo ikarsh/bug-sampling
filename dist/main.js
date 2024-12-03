@@ -34,7 +34,9 @@ let subsessions = [];
 // subsession form submission
 (_c = document.getElementById('subsessionForm')) === null || _c === void 0 ? void 0 : _c.addEventListener('submit', (e) => __awaiter(void 0, void 0, void 0, function* () {
     e.preventDefault();
-    const wasRaining = document.getElementById('wasRaining').checked;
+    console.log("secondary form submitted");
+    const phenologicalState = parseInt(document.getElementById('PhenologicalState').value);
+    const femaleFlowerPercentage = parseInt(document.getElementById('FemaleFlowerPercentage').value);
     // sampling phase
     const gridElement = document.getElementById('bugGrid');
     currentDisplay = new BugDisplay(gridElement);
@@ -45,7 +47,8 @@ let subsessions = [];
     // store subsession results
     if (currentDisplay) {
         subsessions.push({
-            wasRaining,
+            phenologicalState,
+            femaleFlowerPercentage,
             counts: currentDisplay.getCounts(),
             actions: currentDisplay.getActions()
         });
@@ -63,6 +66,6 @@ let subsessions = [];
 }));
 function generateFullCsv(setup, subsessions) {
     const setupInfo = `Date,${setup.date}\nLocation,${setup.location}\nSite,${setup.site}\nType,${setup.treatment}\nLength,${setup.samplingLength}\n\n`;
-    const subsessionsCsv = subsessions.map((sub, idx) => `Subsession ${idx + 1}\nRaining,${sub.wasRaining}\n${bugs.map((bug, i) => `${bug.name},${sub.counts[i]}`).join('\n')}\n`).join('\n');
+    const subsessionsCsv = subsessions.map((sub, idx) => `Subsession ${idx + 1}\nPhenological State,${sub.phenologicalState}\nFemale Flower Percentage,${sub.femaleFlowerPercentage}\n${bugs.map((bug, i) => `${bug.name},${sub.counts[i]}`).join('\n')}\n`).join('\n');
     return setupInfo + subsessionsCsv;
 }
