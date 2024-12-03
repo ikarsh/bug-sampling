@@ -2,7 +2,7 @@
 
 export type Screen = 'session-form-screen' | 'sample-form-screen' | 'sample-screen';
 
-export class UiState {
+export class ScreenManager {
     private currentScreen: Screen;
     private screens: Map<Screen, HTMLElement>;
     

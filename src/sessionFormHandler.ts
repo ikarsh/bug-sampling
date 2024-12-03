@@ -1,5 +1,5 @@
 import { SessionSetup, SITES, TREATMENTS, Treatment } from './types.js';
-import { LocationTracker } from './locationTracker.js';
+import { LocationTracker } from './utils/locationTracker.js';
 
 export class SessionFormHandler {
     private locationTracker: LocationTracker;

@@ -1,13 +1,13 @@
 import { BugDisplay } from "./bugDisplay.js";
 import { bugs } from "./bugs.js";
 import { SessionFormHandler } from "./sessionFormHandler.js";
-import { timer } from "./timer.js";
+import { timer } from "./utils/timer.js";
 import { SessionSetup, Sample } from "./types.js";
-import { UiState } from "./ui.js";
+import { ScreenManager } from "./screenManager.js";
 
 let currentDisplay: BugDisplay | null = null;
 const setupHandler = new SessionFormHandler();
-const ui = new UiState();
+const ui = new ScreenManager();
 
 let setup = null; // The answers to the initial form.
 

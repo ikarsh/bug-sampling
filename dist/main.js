@@ -11,11 +11,11 @@ var _a, _b, _c;
 import { BugDisplay } from "./bugDisplay.js";
 import { bugs } from "./bugs.js";
 import { SessionFormHandler } from "./sessionFormHandler.js";
-import { timer } from "./timer.js";
-import { UiState } from "./ui.js";
+import { timer } from "./utils/timer.js";
+import { ScreenManager } from "./screenManager.js";
 let currentDisplay = null;
 const setupHandler = new SessionFormHandler();
-const ui = new UiState();
+const ui = new ScreenManager();
 let setup = null; // The answers to the initial form.
 (_a = document.getElementById('undoButton')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => {
     console.log("undo clicked");
