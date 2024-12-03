@@ -1,27 +1,35 @@
 // ui.ts
 
-export type Screen = 'setup' | 'subsession-form' | 'sampling';
+export type Screen = 'session-form-screen' | 'sample-form-screen' | 'sample-screen';
 
 export class UiState {
-    private currentScreen: Screen = 'setup';
+    private currentScreen: Screen;
+    private screens: Map<Screen, HTMLElement>;
     private timerInterval?: number;
     
     constructor() {
+        this.screens = new Map();
+        document.querySelectorAll<HTMLElement>('[data-screen]').forEach(element => {
+            const screenName = element.dataset.screen as Screen;
+            this.screens.set(screenName, element);
+        });
+
+        this.currentScreen = 'session-form-screen';
         this.updateScreens();
     }
     private updateScreens() {
-        const setupScreen = document.querySelector<HTMLElement>('[data-screen="setup"]');
-        const subsessionScreen = document.querySelector<HTMLElement>('[data-screen="subsession-form"]');
-        const samplingScreen = document.querySelector<HTMLElement>('[data-screen="sampling"]');
-        
-        console.log("screens:", {setupScreen, subsessionScreen, samplingScreen});
-        console.log("current screen:", this.currentScreen);
-        
-        if (!setupScreen || !subsessionScreen || !samplingScreen) return;
-        
-        setupScreen.style.display = this.currentScreen === 'setup' ? 'block' : 'none';
-        subsessionScreen.style.display = this.currentScreen === 'subsession-form' ? 'block' : 'none';
-        samplingScreen.style.display = this.currentScreen === 'sampling' ? 'block' : 'none';
+        // hide all screens
+        this.screens.forEach(element => {
+            element.style.display = 'none';
+        });
+
+        // show current screen
+        const currentElement = this.screens.get(this.currentScreen);
+        if (currentElement) {
+            currentElement.style.display = 'block';
+        } else {
+            console.error(`Screen ${this.currentScreen} not found`);
+        }
     }
     
     showScreen(name: Screen) {

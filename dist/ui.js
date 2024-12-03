@@ -10,20 +10,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 export class UiState {
     constructor() {
-        this.currentScreen = 'setup';
+        this.screens = new Map();
+        document.querySelectorAll('[data-screen]').forEach(element => {
+            const screenName = element.dataset.screen;
+            this.screens.set(screenName, element);
+        });
+        this.currentScreen = 'session-form-screen';
         this.updateScreens();
     }
     updateScreens() {
-        const setupScreen = document.querySelector('[data-screen="setup"]');
-        const subsessionScreen = document.querySelector('[data-screen="subsession-form"]');
-        const samplingScreen = document.querySelector('[data-screen="sampling"]');
-        console.log("screens:", { setupScreen, subsessionScreen, samplingScreen });
-        console.log("current screen:", this.currentScreen);
-        if (!setupScreen || !subsessionScreen || !samplingScreen)
-            return;
-        setupScreen.style.display = this.currentScreen === 'setup' ? 'block' : 'none';
-        subsessionScreen.style.display = this.currentScreen === 'subsession-form' ? 'block' : 'none';
-        samplingScreen.style.display = this.currentScreen === 'sampling' ? 'block' : 'none';
+        // hide all screens
+        this.screens.forEach(element => {
+            element.style.display = 'none';
+        });
+        // show current screen
+        const currentElement = this.screens.get(this.currentScreen);
+        if (currentElement) {
+            currentElement.style.display = 'block';
+        }
+        else {
+            console.error(`Screen ${this.currentScreen} not found`);
+        }
     }
     showScreen(name) {
         this.currentScreen = name;

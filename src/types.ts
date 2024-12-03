@@ -4,17 +4,10 @@ export interface Bug {
   image: string;
 }
 
-export interface Session {
-  duration: number;
-  counts: number[];
-  actions: number[];
-}
-
-export interface SubSession {
+export interface Sample {
   phenologicalState: number;
   femaleFlowerPercentage: number;
   counts: number[];
-  actions: number[];
 }
 
 export interface Coordinates {

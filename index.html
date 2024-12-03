@@ -10,7 +10,7 @@
     <script type="module" src="dist/main.js" defer></script>
 </head>
 <body>
-    <div class="screen" data-screen="setup" data-active="true">
+    <div class="screen" data-screen="session-form-screen" data-active="true">
         <form class="data-form" id="initialForm">
             <div class="form-group">
                 <label>Date</label>
@@ -65,29 +65,27 @@
         </form>
     </div>
 
-    <div class="screen" data-screen="subsession-form" data-active="false">
-        <form class="data-form" id="subsessionForm">
+    <div class="screen" data-screen="sample-form-screen" data-active="false">
+        <form class="data-form" id="sampleForm">
+            <!-- This is Phenological State, a number between 1 to 5. -->
             <div class="form-group">
-                <!-- This is Phenological State, a number between 1 to 5. -->
                 <label for="PhenologicalState">Phenological State</label>
                 <div class="input-container">
                     <input type="number" id="PhenologicalState" value="1" min="1" max="5" required>
                 </div>
             </div>
+            <!-- This is Female Flower Percentage, from 0% to 100% -->
             <div class="form-group">
-                
-
-                <!-- This is Female Flower Percentage, from 0% to 100% -->
                 <label for="FemaleFlowerPercentage">Female Flower Percentage</label>
                 <div class="input-container">
                     <input type="number" id="FemaleFlowerPercentage" value="0" min="0" max="100" required>%
                 </div>
             </div>
-            <button type="submit">Start Sub-session</button>
+            <button type="submit">Start Sample</button>
         </form>
     </div>
 
-    <div class="screen" data-screen="sampling" data-active="false">
+    <div class="screen" data-screen="sample-screen" data-active="false">
         <button class="undo-btn" id="undoButton">Undo</button>
         <div id="timer"></div>
         <div class="grid-container" id="bugGrid"></div>
