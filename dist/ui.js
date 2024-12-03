@@ -33,8 +33,10 @@ export class UiState {
         return __awaiter(this, void 0, void 0, function* () {
             const timerElement = document.getElementById('timer');
             let timeLeft = duration;
-            // clean up any existing timer
             this.cleanupTimer();
+            // show initial state immediately
+            timerElement.textContent = `Time: ${timeLeft}s`;
+            timeLeft--;
             return new Promise((resolve) => {
                 this.timerInterval = setInterval(() => {
                     timerElement.textContent = `Time: ${timeLeft}s`;

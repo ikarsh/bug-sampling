@@ -28,13 +28,16 @@ export class UiState {
         this.currentScreen = name;
         this.updateScreens();
     }
-
+    
     async startTimer(duration: number): Promise<void> {
         const timerElement = document.getElementById('timer')!;
         let timeLeft = duration;
-
-        // clean up any existing timer
+        
         this.cleanupTimer();
+        
+        // show initial state immediately
+        timerElement.textContent = `Time: ${timeLeft}s`;
+        timeLeft--;
         
         return new Promise((resolve) => {
             this.timerInterval = setInterval(() => {
@@ -48,7 +51,6 @@ export class UiState {
             }, 1000);
         });
     }
-
     private cleanupTimer() {
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
