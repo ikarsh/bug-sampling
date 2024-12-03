@@ -62,7 +62,7 @@ let subsessions = [];
     }
 }));
 function generateFullCsv(setup, subsessions) {
-    const setupInfo = `Date,${setup.date}\nLocation,${setup.location}\nSite,${setup.site}\nType,${setup.type}\nLength,${setup.samplingLength}\n\n`;
+    const setupInfo = `Date,${setup.date}\nLocation,${setup.location}\nSite,${setup.site}\nType,${setup.treatment}\nLength,${setup.samplingLength}\n\n`;
     const subsessionsCsv = subsessions.map((sub, idx) => `Subsession ${idx + 1}\nRaining,${sub.wasRaining}\n${bugs.map((bug, i) => `${bug.name},${sub.counts[i]}`).join('\n')}\n`).join('\n');
     return setupInfo + subsessionsCsv;
 }

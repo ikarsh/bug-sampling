@@ -1,5 +1,5 @@
 // setup.ts
-import { SamplingSetup, SITES, SAMPLING_TYPES, Coordinates, Location, SamplingType } from './types.js';
+import { SamplingSetup, SITES, TREATMENTS as SAMPLING_TREATMENTS, Coordinates, Location, SamplingType } from './types.js';
 
 export class SetupHandler {
     private locationWatchId: number | null = null;
@@ -27,7 +27,7 @@ export class SetupHandler {
 
         // Populate dropdowns
         const siteSelect = document.getElementById('site') as HTMLSelectElement;
-        const typeSelect = document.getElementById('type') as HTMLSelectElement;
+        const treatmentSelect = document.getElementById('treatment') as HTMLSelectElement;
 
         SITES.forEach(site => {
             const option = document.createElement('option');
@@ -36,11 +36,11 @@ export class SetupHandler {
             siteSelect.appendChild(option);
         });
 
-        SAMPLING_TYPES.forEach(type => {
+        SAMPLING_TREATMENTS.forEach(treatment => {
             const option = document.createElement('option');
-            option.value = type;
-            option.textContent = type;
-            typeSelect.appendChild(option);
+            option.value = treatment;
+            option.textContent = treatment;
+            treatmentSelect.appendChild(option);
         });
 
         // Update time every second
@@ -85,7 +85,7 @@ export class SetupHandler {
             date: new Date(),
             location: this.currentLocation,
             site: (document.getElementById('site') as HTMLSelectElement).value as SamplingSetup['site'],
-            type: (document.getElementById('type') as HTMLSelectElement).value as SamplingType,
+            treatment: (document.getElementById('treatment') as HTMLSelectElement).value as SamplingType,
             samplingLength: parseInt((document.getElementById('samplingLength') as HTMLInputElement).value)
         };
     }

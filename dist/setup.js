@@ -1,5 +1,5 @@
 // setup.ts
-import { SITES, SAMPLING_TYPES } from './types.js';
+import { SITES, TREATMENTS as SAMPLING_TREATMENTS } from './types.js';
 export class SetupHandler {
     constructor() {
         this.locationWatchId = null;
@@ -21,18 +21,18 @@ export class SetupHandler {
         statusSpan.textContent = '(No location available)';
         // Populate dropdowns
         const siteSelect = document.getElementById('site');
-        const typeSelect = document.getElementById('type');
+        const treatmentSelect = document.getElementById('treatment');
         SITES.forEach(site => {
             const option = document.createElement('option');
             option.value = site;
             option.textContent = site;
             siteSelect.appendChild(option);
         });
-        SAMPLING_TYPES.forEach(type => {
+        SAMPLING_TREATMENTS.forEach(treatment => {
             const option = document.createElement('option');
-            option.value = type;
-            option.textContent = type;
-            typeSelect.appendChild(option);
+            option.value = treatment;
+            option.textContent = treatment;
+            treatmentSelect.appendChild(option);
         });
         // Update time every second
         setInterval(() => {
@@ -71,7 +71,7 @@ export class SetupHandler {
             date: new Date(),
             location: this.currentLocation,
             site: document.getElementById('site').value,
-            type: document.getElementById('type').value,
+            treatment: document.getElementById('treatment').value,
             samplingLength: parseInt(document.getElementById('samplingLength').value)
         };
     }

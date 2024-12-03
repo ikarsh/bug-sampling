@@ -61,7 +61,7 @@ document.getElementById('subsessionForm')?.addEventListener('submit', async (e) 
 });
 
 function generateFullCsv(setup: SamplingSetup, subsessions: SubSession[]): string {
-    const setupInfo = `Date,${setup.date}\nLocation,${setup.location}\nSite,${setup.site}\nType,${setup.type}\nLength,${setup.samplingLength}\n\n`;
+    const setupInfo = `Date,${setup.date}\nLocation,${setup.location}\nSite,${setup.site}\nType,${setup.treatment}\nLength,${setup.samplingLength}\n\n`;
     
     const subsessionsCsv = subsessions.map((sub, idx) => 
         `Subsession ${idx + 1}\nRaining,${sub.wasRaining}\n${bugs.map((bug, i) => 
