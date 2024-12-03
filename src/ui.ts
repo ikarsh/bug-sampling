@@ -1,6 +1,6 @@
 // ui.ts
 
-export type Screen = 'setup' | 'sampling';
+export type Screen = 'setup' | 'subsession-form' | 'sampling';
 
 export class UiState {
     private currentScreen: Screen = 'setup';
@@ -9,14 +9,18 @@ export class UiState {
     constructor() {
         this.updateScreens();
     }
-    
     private updateScreens() {
         const setupScreen = document.querySelector<HTMLElement>('[data-screen="setup"]');
+        const subsessionScreen = document.querySelector<HTMLElement>('[data-screen="subsession-form"]');
         const samplingScreen = document.querySelector<HTMLElement>('[data-screen="sampling"]');
         
-        if (!setupScreen || !samplingScreen) return;
+        console.log("screens:", {setupScreen, subsessionScreen, samplingScreen});
+        console.log("current screen:", this.currentScreen);
+        
+        if (!setupScreen || !subsessionScreen || !samplingScreen) return;
         
         setupScreen.style.display = this.currentScreen === 'setup' ? 'block' : 'none';
+        subsessionScreen.style.display = this.currentScreen === 'subsession-form' ? 'block' : 'none';
         samplingScreen.style.display = this.currentScreen === 'sampling' ? 'block' : 'none';
     }
     

@@ -10,6 +10,12 @@ export interface Session {
   actions: number[];
 }
 
+export interface SubSession {
+  wasRaining: boolean;
+  counts: number[];
+  actions: number[];
+}
+
 export interface Coordinates {
   latitude: number;
   longitude: number;

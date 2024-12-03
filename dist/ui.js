@@ -15,10 +15,14 @@ export class UiState {
     }
     updateScreens() {
         const setupScreen = document.querySelector('[data-screen="setup"]');
+        const subsessionScreen = document.querySelector('[data-screen="subsession-form"]');
         const samplingScreen = document.querySelector('[data-screen="sampling"]');
-        if (!setupScreen || !samplingScreen)
+        console.log("screens:", { setupScreen, subsessionScreen, samplingScreen });
+        console.log("current screen:", this.currentScreen);
+        if (!setupScreen || !subsessionScreen || !samplingScreen)
             return;
         setupScreen.style.display = this.currentScreen === 'setup' ? 'block' : 'none';
+        subsessionScreen.style.display = this.currentScreen === 'subsession-form' ? 'block' : 'none';
         samplingScreen.style.display = this.currentScreen === 'sampling' ? 'block' : 'none';
     }
     showScreen(name) {
