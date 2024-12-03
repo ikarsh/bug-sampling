@@ -1,5 +1,5 @@
 // setup.ts
-import { SamplingSetup, SITES, TREATMENTS as SAMPLING_TREATMENTS, Coordinates, Location, SamplingType } from './types.js';
+import { SamplingSetup, SITES, TREATMENTS as SAMPLING_TREATMENTS, Coordinates, Location, Treatment } from './types.js';
 
 export class SetupHandler {
     private locationWatchId: number | null = null;
@@ -85,7 +85,7 @@ export class SetupHandler {
             date: new Date(),
             location: this.currentLocation,
             site: (document.getElementById('site') as HTMLSelectElement).value as SamplingSetup['site'],
-            treatment: (document.getElementById('treatment') as HTMLSelectElement).value as SamplingType,
+            treatment: (document.getElementById('treatment') as HTMLSelectElement).value as Treatment,
             samplingLength: parseInt((document.getElementById('samplingLength') as HTMLInputElement).value)
         };
     }

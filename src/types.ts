@@ -27,12 +27,12 @@ export interface SamplingSetup {
   date: Date;
   location: Location;  // Now can be either coordinates or 'N/A'
   site: Site;
-  treatment: SamplingType;
+  treatment: Treatment;
   samplingLength: number;
 }
 
-export type Site = 'site1' | 'site2' | 'site3' | 'site4' | 'site5' | 'site6';
-export type SamplingType = 'Control' | 'High variety mix' | 'Low variety mix';
+export const SITES = ['Revadim North', 'Revadim East', 'Revadim South', 'Galon East', 'Galon West', 'Mishmar Hanegev'];
+export const TREATMENTS = ['Control', 'High variety mix', 'Low variety mix'];
 
-export const SITES: Site[] = ['site1', 'site2', 'site3', 'site4', 'site5', 'site6'];
-export const TREATMENTS: SamplingType[] = ['Control', 'High variety mix', 'Low variety mix'];
+export type Site = typeof SITES[number];
+export type Treatment = typeof TREATMENTS[number];
