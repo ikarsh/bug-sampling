@@ -62,10 +62,6 @@ export class BugDisplay {
     getCounts(): number[] {
         return [...this.counts];
     }
-    
-    getActions(): number[] {
-        return [...this.actions];
-    }
 
     generateCsv(): string {
         return bugs.map((bug, i) => 
