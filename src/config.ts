@@ -1,7 +1,10 @@
+import { BugInterface } from "./types.js";
 
-import { Bug } from './types.js';
+export const SITES = ['Revadim North', 'Revadim East', 'Revadim South', 'Galon East', 'Galon West', 'Mishmar Hanegev'];
+export const TREATMENTS = ['Control', 'High variety mix', 'Low variety mix'];
 
-export const bugs: Bug[] = [
+
+export const bugs: BugInterface[] = [
     { name: "דבורת דבש", image: "/images/honey-bee.jpg" },
     { name: "רחפן", image: "/api/placeholder/60/60" },
     { name: "רקבן", image: "/api/placeholder/60/60" },
@@ -17,4 +20,3 @@ export const bugs: Bug[] = [
     { name: "נמלה", image: "/api/placeholder/60/60" },
     { name: "אחר", image: "/api/placeholder/60/60" },
 ];
-

@@ -1,5 +1,6 @@
-// types.ts
-export interface Bug {
+import { bugs, SITES, TREATMENTS } from "./config";
+
+export interface BugInterface {
   name: string;
   image: string;
 }
@@ -16,17 +17,16 @@ export interface SessionSetup {
   location: Location;  // Now can be either coordinates or 'N/A'
   site: Site;
   treatment: Treatment;
-  samplingLength: number;
 }
 
 export interface Sample {
   phenologicalState: number;
   femaleFlowerPercentage: number;
+  samplingLength: number;
   counts: number[];
 }
 
-export const SITES = ['Revadim North', 'Revadim East', 'Revadim South', 'Galon East', 'Galon West', 'Mishmar Hanegev'];
-export const TREATMENTS = ['Control', 'High variety mix', 'Low variety mix'];
-
 export type Site = typeof SITES[number];
 export type Treatment = typeof TREATMENTS[number];
+
+export type Bug = typeof bugs[number];

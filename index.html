@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="screen" data-screen="session-form-screen" data-active="true">
-        <form class="data-form" id="initialForm">
+        <form class="data-form" id="sessionForm">
             <div class="form-group">
                 <label>Date</label>
                 <div class="input-container">
@@ -53,19 +53,13 @@
                 </div>
             </div>
             
-            <div class="form-group">
-                <label for="samplingLength">Duration</label>
-                <div class="input-container">
-                    <input type="number" id="samplingLength" value="10" min="1" required>
-                    <span class="unit">seconds</span>
-                </div>
-            </div>
             
-            <button type="submit">Start Sampling</button>
+            <button type="submit">Start Session</button>
         </form>
     </div>
 
     <div class="screen" data-screen="sample-form-screen" data-active="false">
+        <div class="sample-name" id="sample-name-0"></div>
         <form class="data-form" id="sampleForm">
             <!-- This is Phenological State, a number between 1 to 5. -->
             <div class="form-group">
@@ -81,12 +75,24 @@
                     <input type="number" id="FemaleFlowerPercentage" value="0" min="0" max="100" required>%
                 </div>
             </div>
+
+
+            <div class="form-group">
+                <label for="samplingLength">Duration</label>
+                <div class="input-container">
+                    <input type="number" id="samplingLength" value="10" min="1" required>
+                    <span class="unit">seconds</span>
+                </div>
+            </div>
+
             <button type="submit">Start Sample</button>
         </form>
     </div>
 
     <div class="screen" data-screen="sample-screen" data-active="false">
+        
         <button class="undo-btn" id="undoButton">Undo</button>
+        <div class="sample-name" id="sample-name-1"></div>
         <div id="timer"></div>
         <div class="grid-container" id="bugGrid"></div>
     </div>

@@ -1,5 +1,5 @@
-import { Bug } from './types.js';
-import { bugs } from './bugs.js';
+import { bugs } from './config.js';
+import { BugInterface } from './types.js';
 
 export class BugDisplay {
     private counts: number[] = new Array(bugs.length).fill(0);
@@ -20,7 +20,7 @@ export class BugDisplay {
         });
     }
 
-    private createCell(bug: Bug, index: number): HTMLElement {
+    private createCell(bug: BugInterface, index: number): HTMLElement {
         const cell = document.createElement('div');
         cell.className = 'bug-cell';
         
@@ -67,5 +67,11 @@ export class BugDisplay {
         return bugs.map((bug, i) => 
             `${bug.name},${this.counts[i]}`
         ).join('\n');
+    }
+
+    clear() {
+        this.counts.fill(0);
+        this.actions = [];
+        bugs.forEach((_, i) => this.updateDisplay(i));
     }
 }

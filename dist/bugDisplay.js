@@ -1,4 +1,4 @@
-import { bugs } from './bugs.js';
+import { bugs } from './config.js';
 export class BugDisplay {
     constructor(gridElement) {
         this.counts = new Array(bugs.length).fill(0);
@@ -52,5 +52,10 @@ export class BugDisplay {
     }
     generateCsv() {
         return bugs.map((bug, i) => `${bug.name},${this.counts[i]}`).join('\n');
+    }
+    clear() {
+        this.counts.fill(0);
+        this.actions = [];
+        bugs.forEach((_, i) => this.updateDisplay(i));
     }
 }

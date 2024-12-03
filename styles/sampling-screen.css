@@ -79,3 +79,10 @@
 .undo-btn:hover {
     background: #ff0000;
 }
+
+
+/* in sampling-screen.css */
+#sample-name-1 {
+    /* sampling screen might want it between timer and grid */
+    margin: 15px 0;
+}

@@ -1,78 +1,41 @@
-import { BugDisplay } from "./bugDisplay.js";
-import { bugs } from "./bugs.js";
-import { SessionFormHandler } from "./sessionFormHandler.js";
-import { timer } from "./utils/timer.js";
-import { SessionSetup, Sample } from "./types.js";
+import { SITES, TREATMENTS } from "./config.js";
 import { ScreenManager } from "./screenManager.js";
 
-let currentDisplay: BugDisplay | null = null;
-const setupHandler = new SessionFormHandler();
-const ui = new ScreenManager();
 
-let setup = null; // The answers to the initial form.
+// populate dropdowns
 
-document.getElementById('undoButton')?.addEventListener('click', () => {
-    console.log("undo clicked");
-    currentDisplay?.undo();
-});
-let samples: Sample[] = [];
+const siteSelect = document.getElementById('site') as HTMLSelectElement;
+const treatmentSelect = document.getElementById('treatment') as HTMLSelectElement;
 
-// Setup initial form submission
-document.getElementById('initialForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    console.log("initial form submitted");
-    setup = setupHandler.getSetup();
-    samples = [];
-    console.log("showing sample form");
-    ui.showScreen('sample-form-screen');
+SITES.forEach(site => {
+    const option = document.createElement('option');
+    option.value = site;
+    option.textContent = site;
+    siteSelect.appendChild(option);
 });
 
-// sample form submission
-document.getElementById('sampleForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    console.log("secondary form submitted");
-    
-    const phenologicalState = parseInt((document.getElementById('PhenologicalState') as HTMLInputElement).value);
-    const femaleFlowerPercentage = parseInt((document.getElementById('FemaleFlowerPercentage') as HTMLInputElement).value);
-
-    // sampling phase
-    const gridElement = document.getElementById('bugGrid')!;
-    currentDisplay = new BugDisplay(gridElement);
-    ui.showScreen('sample-screen');
-    
-    // wait for timer to finish
-    const setup = setupHandler.getSetup();
-    await timer(document.getElementById('timer')!, setup.samplingLength);
-    
-    // store sample results
-    if (currentDisplay) {
-        samples.push({
-            phenologicalState,
-            femaleFlowerPercentage,
-            counts: currentDisplay.getCounts(),
-        });
-        currentDisplay = null;
-        
-        if (samples.length < 2) {
-            ui.showScreen('sample-form-screen');  // do another sample
-        } else {
-            // all done!
-            ui.downloadCsv('bugs.csv', generateFullCsv(setupHandler.getSetup(), samples));
-            samples = [];
-            ui.showScreen('session-form-screen');
-        }
-    }
+TREATMENTS.forEach(treatment => {
+    const option = document.createElement('option');
+    option.value = treatment;
+    option.textContent = treatment;
+    treatmentSelect.appendChild(option);
 });
 
-function generateFullCsv(setup: SessionSetup, samples: Sample[]): string {
-    const setupInfo = `Date,${setup.date}\nLocation,${setup.location}\nSite,${setup.site}\nType,${setup.treatment}\nLength,${setup.samplingLength}\n\n`;
-    
-    const sampleCsv = samples.map((sample, idx) => 
-        `Sample ${idx + 1}\nPhenological State,${sample.phenologicalState}\nFemale Flower Percentage,${sample.femaleFlowerPercentage}\n${bugs.map((bug, i) => 
-            `${bug.name},${sample.counts[i]}`
-        ).join('\n')}\n`
-    ).join('\n');
+// set date and time
 
-    return setupInfo + sampleCsv;
-}
+const dateInput = document.getElementById('samplingDate') as HTMLInputElement;
+const hourInput = document.getElementById('samplingHour') as HTMLInputElement;
+
+const updateDateTime = () => {
+    const now = new Date();
+    dateInput.value = now.toLocaleDateString();
+    hourInput.value = now.toLocaleTimeString();
+};
+
+// set initial values
+updateDateTime();
+
+// update both every second
+setInterval(updateDateTime, 1000);
+
+new ScreenManager();

@@ -1,70 +1,30 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var _a, _b, _c;
-import { BugDisplay } from "./bugDisplay.js";
-import { bugs } from "./bugs.js";
-import { SessionFormHandler } from "./sessionFormHandler.js";
-import { timer } from "./utils/timer.js";
+import { SITES, TREATMENTS } from "./config.js";
 import { ScreenManager } from "./screenManager.js";
-let currentDisplay = null;
-const setupHandler = new SessionFormHandler();
-const ui = new ScreenManager();
-let setup = null; // The answers to the initial form.
-(_a = document.getElementById('undoButton')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => {
-    console.log("undo clicked");
-    currentDisplay === null || currentDisplay === void 0 ? void 0 : currentDisplay.undo();
+// populate dropdowns
+const siteSelect = document.getElementById('site');
+const treatmentSelect = document.getElementById('treatment');
+SITES.forEach(site => {
+    const option = document.createElement('option');
+    option.value = site;
+    option.textContent = site;
+    siteSelect.appendChild(option);
 });
-let samples = [];
-// Setup initial form submission
-(_b = document.getElementById('initialForm')) === null || _b === void 0 ? void 0 : _b.addEventListener('submit', (e) => __awaiter(void 0, void 0, void 0, function* () {
-    e.preventDefault();
-    console.log("initial form submitted");
-    setup = setupHandler.getSetup();
-    samples = [];
-    console.log("showing sample form");
-    ui.showScreen('sample-form-screen');
-}));
-// sample form submission
-(_c = document.getElementById('sampleForm')) === null || _c === void 0 ? void 0 : _c.addEventListener('submit', (e) => __awaiter(void 0, void 0, void 0, function* () {
-    e.preventDefault();
-    console.log("secondary form submitted");
-    const phenologicalState = parseInt(document.getElementById('PhenologicalState').value);
-    const femaleFlowerPercentage = parseInt(document.getElementById('FemaleFlowerPercentage').value);
-    // sampling phase
-    const gridElement = document.getElementById('bugGrid');
-    currentDisplay = new BugDisplay(gridElement);
-    ui.showScreen('sample-screen');
-    // wait for timer to finish
-    const setup = setupHandler.getSetup();
-    yield timer(document.getElementById('timer'), setup.samplingLength);
-    // store sample results
-    if (currentDisplay) {
-        samples.push({
-            phenologicalState,
-            femaleFlowerPercentage,
-            counts: currentDisplay.getCounts(),
-        });
-        currentDisplay = null;
-        if (samples.length < 2) {
-            ui.showScreen('sample-form-screen'); // do another sample
-        }
-        else {
-            // all done!
-            ui.downloadCsv('bugs.csv', generateFullCsv(setupHandler.getSetup(), samples));
-            samples = [];
-            ui.showScreen('session-form-screen');
-        }
-    }
-}));
-function generateFullCsv(setup, samples) {
-    const setupInfo = `Date,${setup.date}\nLocation,${setup.location}\nSite,${setup.site}\nType,${setup.treatment}\nLength,${setup.samplingLength}\n\n`;
-    const sampleCsv = samples.map((sample, idx) => `Sample ${idx + 1}\nPhenological State,${sample.phenologicalState}\nFemale Flower Percentage,${sample.femaleFlowerPercentage}\n${bugs.map((bug, i) => `${bug.name},${sample.counts[i]}`).join('\n')}\n`).join('\n');
-    return setupInfo + sampleCsv;
-}
+TREATMENTS.forEach(treatment => {
+    const option = document.createElement('option');
+    option.value = treatment;
+    option.textContent = treatment;
+    treatmentSelect.appendChild(option);
+});
+// set date and time
+const dateInput = document.getElementById('samplingDate');
+const hourInput = document.getElementById('samplingHour');
+const updateDateTime = () => {
+    const now = new Date();
+    dateInput.value = now.toLocaleDateString();
+    hourInput.value = now.toLocaleTimeString();
+};
+// set initial values
+updateDateTime();
+// update both every second
+setInterval(updateDateTime, 1000);
+new ScreenManager();
