@@ -1,4 +1,4 @@
-import { Location, Coordinates } from './types.js';
+import { Location, Coordinates } from '../types.js';
 
 export class LocationTracker {
     private watchId: number | null = null;
