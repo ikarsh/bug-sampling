@@ -41,9 +41,9 @@ export class BugDisplay {
         this.updateDisplay(index);
     }
     undo() {
-        if (this.actions.length === 0)
-            return;
         const lastIndex = this.actions.pop();
+        if (lastIndex === undefined)
+            return;
         this.counts[lastIndex]--;
         this.updateDisplay(lastIndex);
     }

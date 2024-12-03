@@ -5,7 +5,6 @@ export type Screen = 'session-form-screen' | 'sample-form-screen' | 'sample-scre
 export class UiState {
     private currentScreen: Screen;
     private screens: Map<Screen, HTMLElement>;
-    private timerInterval?: number;
     
     constructor() {
         this.screens = new Map();
@@ -37,34 +36,6 @@ export class UiState {
         this.updateScreens();
     }
     
-    async startTimer(duration: number): Promise<void> {
-        const timerElement = document.getElementById('timer')!;
-        let timeLeft = duration;
-        
-        this.cleanupTimer();
-        
-        // show initial state immediately
-        timerElement.textContent = `Time: ${timeLeft}s`;
-        timeLeft--;
-        
-        return new Promise((resolve) => {
-            this.timerInterval = setInterval(() => {
-                timerElement.textContent = `Time: ${timeLeft}s`;
-                timeLeft--;
-                
-                if (timeLeft < 0) {
-                    this.cleanupTimer();
-                    resolve();
-                }
-            }, 1000);
-        });
-    }
-    private cleanupTimer() {
-        if (this.timerInterval) {
-            clearInterval(this.timerInterval);
-            this.timerInterval = undefined;
-        }
-    }
 
     downloadCsv(filename: string, content: string) {
         // const blob = new Blob([content], { type: 'text/csv' });

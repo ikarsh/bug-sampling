@@ -4,12 +4,6 @@ export interface Bug {
   image: string;
 }
 
-export interface Sample {
-  phenologicalState: number;
-  femaleFlowerPercentage: number;
-  counts: number[];
-}
-
 export interface Coordinates {
   latitude: number;
   longitude: number;
@@ -17,12 +11,18 @@ export interface Coordinates {
 
 export type Location = Coordinates | 'N/A';
 
-export interface SamplingSetup {
+export interface SessionSetup {
   date: Date;
   location: Location;  // Now can be either coordinates or 'N/A'
   site: Site;
   treatment: Treatment;
   samplingLength: number;
+}
+
+export interface Sample {
+  phenologicalState: number;
+  femaleFlowerPercentage: number;
+  counts: number[];
 }
 
 export const SITES = ['Revadim North', 'Revadim East', 'Revadim South', 'Galon East', 'Galon West', 'Mishmar Hanegev'];

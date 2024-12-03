@@ -1,7 +1,7 @@
-import { SamplingSetup, SITES, TREATMENTS, Treatment } from './types.js';
+import { SessionSetup, SITES, TREATMENTS, Treatment } from './types.js';
 import { LocationTracker } from './locationTracker.js';
 
-export class SetupHandler {
+export class SessionFormHandler {
     private locationTracker: LocationTracker;
 
     constructor() {
@@ -50,11 +50,11 @@ export class SetupHandler {
         });
     }
 
-    public getCurrentSetup(): SamplingSetup {
+    public getSetup(): SessionSetup {
         return {
             date: new Date(),
             location: this.locationTracker.getCurrentLocation(),
-            site: (document.getElementById('site') as HTMLSelectElement).value as SamplingSetup['site'],
+            site: (document.getElementById('site') as HTMLSelectElement).value as SessionSetup['site'],
             treatment: (document.getElementById('treatment') as HTMLSelectElement).value as Treatment,
             samplingLength: parseInt((document.getElementById('samplingLength') as HTMLInputElement).value)
         };

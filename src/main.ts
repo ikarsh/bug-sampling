@@ -1,11 +1,12 @@
 import { BugDisplay } from "./bugDisplay.js";
 import { bugs } from "./bugs.js";
-import { SetupHandler } from "./setup.js";
-import { SamplingSetup, Sample } from "./types.js";
+import { SessionFormHandler } from "./sessionFormHandler.js";
+import { timer } from "./timer.js";
+import { SessionSetup, Sample } from "./types.js";
 import { UiState } from "./ui.js";
 
 let currentDisplay: BugDisplay | null = null;
-const setupHandler = new SetupHandler();
+const setupHandler = new SessionFormHandler();
 const ui = new UiState();
 
 let setup = null; // The answers to the initial form.
@@ -20,7 +21,7 @@ let samples: Sample[] = [];
 document.getElementById('initialForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     console.log("initial form submitted");
-    setup = setupHandler.getCurrentSetup();
+    setup = setupHandler.getSetup();
     samples = [];
     console.log("showing sample form");
     ui.showScreen('sample-form-screen');
@@ -41,8 +42,8 @@ document.getElementById('sampleForm')?.addEventListener('submit', async (e) => {
     ui.showScreen('sample-screen');
     
     // wait for timer to finish
-    const setup = setupHandler.getCurrentSetup();
-    await ui.startTimer(setup.samplingLength);
+    const setup = setupHandler.getSetup();
+    await timer(document.getElementById('timer')!, setup.samplingLength);
     
     // store sample results
     if (currentDisplay) {
@@ -57,19 +58,19 @@ document.getElementById('sampleForm')?.addEventListener('submit', async (e) => {
             ui.showScreen('sample-form-screen');  // do another sample
         } else {
             // all done!
-            ui.downloadCsv('bugs.csv', generateFullCsv(setupHandler.getCurrentSetup(), samples));
+            ui.downloadCsv('bugs.csv', generateFullCsv(setupHandler.getSetup(), samples));
             samples = [];
             ui.showScreen('session-form-screen');
         }
     }
 });
 
-function generateFullCsv(setup: SamplingSetup, samples: Sample[]): string {
+function generateFullCsv(setup: SessionSetup, samples: Sample[]): string {
     const setupInfo = `Date,${setup.date}\nLocation,${setup.location}\nSite,${setup.site}\nType,${setup.treatment}\nLength,${setup.samplingLength}\n\n`;
     
-    const sampleCsv = samples.map((sub, idx) => 
-        `Sample ${idx + 1}\nPhenological State,${sub.phenologicalState}\nFemale Flower Percentage,${sub.femaleFlowerPercentage}\n${bugs.map((bug, i) => 
-            `${bug.name},${sub.counts[i]}`
+    const sampleCsv = samples.map((sample, idx) => 
+        `Sample ${idx + 1}\nPhenological State,${sample.phenologicalState}\nFemale Flower Percentage,${sample.femaleFlowerPercentage}\n${bugs.map((bug, i) => 
+            `${bug.name},${sample.counts[i]}`
         ).join('\n')}\n`
     ).join('\n');
 
