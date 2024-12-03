@@ -1,27 +1,11 @@
+// main.ts
 import { BugDisplay } from './bugDisplay.js';
 import { SetupHandler } from './setup.js';
-import { showScreen, downloadCsv } from './ui.js';
+import { UiState } from './ui.js';
 
 let currentDisplay: BugDisplay | null = null;
-let currentTimerCleanup: (() => void) | null = null;
 const setupHandler = new SetupHandler();
-
-function startTimer(duration: number, onEnd: () => void) {
-    const timerElement = document.getElementById('timer')!;
-    let timeLeft = duration;
-    
-    const interval = setInterval(() => {
-        timerElement.textContent = `Time: ${timeLeft}s`;
-        timeLeft--;
-        
-        if (timeLeft < 0) {
-            clearInterval(interval);
-            onEnd();
-        }
-    }, 1000);
-    
-    return () => clearInterval(interval);
-}
+const ui = new UiState();
 
 // Setup undo button
 document.getElementById('undoButton')?.addEventListener('click', () => {
@@ -29,28 +13,24 @@ document.getElementById('undoButton')?.addEventListener('click', () => {
 });
 
 // Setup form submission
-document.getElementById('samplingForm')?.addEventListener('submit', (e) => {
+document.getElementById('samplingForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const setup = setupHandler.getCurrentSetup();
-    
-    // Clean up any existing timer
-    if (currentTimerCleanup) {
-        currentTimerCleanup();
-    }
     
     // Initialize new bug display
     const gridElement = document.getElementById('bugGrid')!;
     currentDisplay = new BugDisplay(gridElement);
     
-    // Start timer
-    currentTimerCleanup = startTimer(setup.samplingLength, () => {
-        if (currentDisplay) {
-            downloadCsv('bugs.csv', currentDisplay.generateCsv());
-            currentDisplay = null;
-            showScreen('setup');
-        }
-    });
+    ui.showScreen('sampling');
     
-    showScreen('sampling');
+    // wait for timer to finish
+    await ui.startTimer(setup.samplingLength);
+    
+    // handle completion
+    if (currentDisplay) {
+        ui.downloadCsv('bugs.csv', currentDisplay.generateCsv());
+        currentDisplay = null;
+        ui.showScreen('setup');
+    }
 });

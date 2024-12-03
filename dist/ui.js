@@ -1,21 +1,59 @@
 // ui.ts
-export function showScreen(name) {
-    const setupScreen = document.querySelector('[data-screen="setup"]');
-    const samplingScreen = document.querySelector('[data-screen="sampling"]');
-    if (!setupScreen || !samplingScreen)
-        return;
-    setupScreen.style.display = name === 'setup' ? 'block' : 'none';
-    samplingScreen.style.display = name === 'sampling' ? 'block' : 'none';
-}
-export function updateCount(index, count) {
-    const el = document.getElementById(`count-${index}`);
-    if (el)
-        el.textContent = count.toString();
-}
-export function downloadCsv(filename, content) {
-    // const blob = new Blob([content], { type: 'text/csv' });
-    // const a = document.createElement('a');
-    // a.href = URL.createObjectURL(blob);
-    // a.download = filename;
-    // a.click();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+export class UiState {
+    constructor() {
+        this.currentScreen = 'setup';
+        this.updateScreens();
+    }
+    updateScreens() {
+        const setupScreen = document.querySelector('[data-screen="setup"]');
+        const samplingScreen = document.querySelector('[data-screen="sampling"]');
+        if (!setupScreen || !samplingScreen)
+            return;
+        setupScreen.style.display = this.currentScreen === 'setup' ? 'block' : 'none';
+        samplingScreen.style.display = this.currentScreen === 'sampling' ? 'block' : 'none';
+    }
+    showScreen(name) {
+        this.currentScreen = name;
+        this.updateScreens();
+    }
+    startTimer(duration) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const timerElement = document.getElementById('timer');
+            let timeLeft = duration;
+            // clean up any existing timer
+            this.cleanupTimer();
+            return new Promise((resolve) => {
+                this.timerInterval = setInterval(() => {
+                    timerElement.textContent = `Time: ${timeLeft}s`;
+                    timeLeft--;
+                    if (timeLeft < 0) {
+                        this.cleanupTimer();
+                        resolve();
+                    }
+                }, 1000);
+            });
+        });
+    }
+    cleanupTimer() {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = undefined;
+        }
+    }
+    downloadCsv(filename, content) {
+        // const blob = new Blob([content], { type: 'text/csv' });
+        // const a = document.createElement('a');
+        // a.href = URL.createObjectURL(blob);
+        // a.download = filename;
+        // a.click();
+    }
 }
