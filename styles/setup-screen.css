@@ -1,5 +1,5 @@
 /* styles/setup-screen.css */
-.setup-form {
+.data-form {
     max-width: 500px;  /* Increased to accommodate inline layout */
     margin: 20px auto;
     padding: 20px;
@@ -48,7 +48,7 @@
     font-size: 14px;
 }
 
-.setup-form button {
+.data-form button {
     margin-left: 132px; /* Aligns with inputs (label width + gap) */
     width: calc(100% - 132px);
     padding: 8px;
@@ -61,6 +61,6 @@
     transition: background 0.2s;
 }
 
-.setup-form button:hover {
+.data-form button:hover {
     background: #45a049;  /* Slightly darker shade of green */
 }
