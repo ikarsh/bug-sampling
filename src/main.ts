@@ -4,11 +4,12 @@ import { SetupHandler } from "./setup.js";
 import { SamplingSetup, SubSession } from "./types.js";
 import { UiState } from "./ui.js";
 
-// main.ts
 let currentDisplay: BugDisplay | null = null;
 const setupHandler = new SetupHandler();
 const ui = new UiState();
-// in main.ts
+
+let setup = null; // The answers to the initial form.
+
 document.getElementById('undoButton')?.addEventListener('click', () => {
     console.log("undo clicked");
     currentDisplay?.undo();
@@ -16,10 +17,10 @@ document.getElementById('undoButton')?.addEventListener('click', () => {
 let subsessions: SubSession[] = [];
 
 // Setup initial form submission
-document.getElementById('samplingForm')?.addEventListener('submit', async (e) => {
+document.getElementById('initialForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    console.log("setup form submitted");
-    const setup = setupHandler.getCurrentSetup();
+    console.log("initial form submitted");
+    setup = setupHandler.getCurrentSetup();
     subsessions = [];
     console.log("showing subsession form");
     ui.showScreen('subsession-form');

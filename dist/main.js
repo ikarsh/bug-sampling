@@ -12,21 +12,20 @@ import { BugDisplay } from "./bugDisplay.js";
 import { bugs } from "./bugs.js";
 import { SetupHandler } from "./setup.js";
 import { UiState } from "./ui.js";
-// main.ts
 let currentDisplay = null;
 const setupHandler = new SetupHandler();
 const ui = new UiState();
-// in main.ts
+let setup = null; // The answers to the initial form.
 (_a = document.getElementById('undoButton')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => {
     console.log("undo clicked");
     currentDisplay === null || currentDisplay === void 0 ? void 0 : currentDisplay.undo();
 });
 let subsessions = [];
 // Setup initial form submission
-(_b = document.getElementById('samplingForm')) === null || _b === void 0 ? void 0 : _b.addEventListener('submit', (e) => __awaiter(void 0, void 0, void 0, function* () {
+(_b = document.getElementById('initialForm')) === null || _b === void 0 ? void 0 : _b.addEventListener('submit', (e) => __awaiter(void 0, void 0, void 0, function* () {
     e.preventDefault();
-    console.log("setup form submitted");
-    const setup = setupHandler.getCurrentSetup();
+    console.log("initial form submitted");
+    setup = setupHandler.getCurrentSetup();
     subsessions = [];
     console.log("showing subsession form");
     ui.showScreen('subsession-form');
