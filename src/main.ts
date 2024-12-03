@@ -1,43 +1,53 @@
-import { bugs } from './bugs.js';
-import { BugSession } from './session.js';
-import { Timer } from './timer.js';
-import { BugGrid } from './grid.js';
-import { showScreen, updateCount, downloadCsv } from './ui.js';
+import { BugDisplay } from './bugDisplay.js';
 import { SetupHandler } from './setup.js';
+import { showScreen, downloadCsv } from './ui.js';
 
-let currentSession: BugSession | null = null;
-const timer = new Timer(document.getElementById('timer')!);
-const grid = new BugGrid();
+let currentDisplay: BugDisplay | null = null;
+let currentTimerCleanup: (() => void) | null = null;
 const setupHandler = new SetupHandler();
+
+function startTimer(duration: number, onEnd: () => void) {
+    const timerElement = document.getElementById('timer')!;
+    let timeLeft = duration;
+    
+    const interval = setInterval(() => {
+        timerElement.textContent = `Time: ${timeLeft}s`;
+        timeLeft--;
+        
+        if (timeLeft < 0) {
+            clearInterval(interval);
+            onEnd();
+        }
+    }, 1000);
+    
+    return () => clearInterval(interval);
+}
 
 // Setup undo button
 document.getElementById('undoButton')?.addEventListener('click', () => {
-    if (currentSession) {
-        const index = currentSession.undo();
-        if (index !== null) {
-            updateCount(index, currentSession.counts[index]);
-        }
-    }
+    currentDisplay?.undo();
 });
 
+// Setup form submission
 document.getElementById('samplingForm')?.addEventListener('submit', (e) => {
     e.preventDefault();
     
     const setup = setupHandler.getCurrentSetup();
-    // Generate a meaningful name using timestamp
-    currentSession = new BugSession(setup.samplingLength);
     
-    grid.setup(bugs, (index) => {
-        if (currentSession) {
-            const count = currentSession.increment(index);
-            updateCount(index, count);
-        }
-    });
+    // Clean up any existing timer
+    if (currentTimerCleanup) {
+        currentTimerCleanup();
+    }
     
-    timer.start(setup.samplingLength, () => {
-        if (currentSession) {
-            downloadCsv(`bugs.csv`, currentSession.generateCsv());
-            currentSession = null;
+    // Initialize new bug display
+    const gridElement = document.getElementById('bugGrid')!;
+    currentDisplay = new BugDisplay(gridElement);
+    
+    // Start timer
+    currentTimerCleanup = startTimer(setup.samplingLength, () => {
+        if (currentDisplay) {
+            downloadCsv('bugs.csv', currentDisplay.generateCsv());
+            currentDisplay = null;
             showScreen('setup');
         }
     });
