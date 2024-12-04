@@ -1,6 +1,6 @@
 import { SITES, TREATMENTS } from "./config.js";
 import { ScreenManager } from "./screenManager.js";
-// populate dropdowns
+// populate session form dropdowns
 const siteSelect = document.getElementById('site');
 const treatmentSelect = document.getElementById('treatment');
 SITES.forEach(site => {

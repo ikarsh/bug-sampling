@@ -1,4 +1,4 @@
-import { bugs, SITES, TREATMENTS } from "./config";
+import { bugs, SAMPLE_SIDES, SITES, TREATMENTS } from "./config";
 
 export interface BugInterface {
   name: string;
@@ -17,6 +17,7 @@ export interface SessionSetup {
   location: Location;  // Now can be either coordinates or 'N/A'
   site: Site;
   treatment: Treatment;
+  sampleAmount: number;
 }
 
 export interface Sample {
@@ -28,5 +29,6 @@ export interface Sample {
 
 export type Site = typeof SITES[number];
 export type Treatment = typeof TREATMENTS[number];
+export type SampleSide = typeof SAMPLE_SIDES[number];
 
 export type Bug = typeof bugs[number];

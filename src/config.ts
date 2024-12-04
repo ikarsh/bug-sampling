@@ -2,7 +2,7 @@ import { BugInterface } from "./types.js";
 
 export const SITES = ['Revadim North', 'Revadim East', 'Revadim South', 'Galon East', 'Galon West', 'Mishmar Hanegev'];
 export const TREATMENTS = ['Control', 'High variety mix', 'Low variety mix'];
-
+export const SAMPLE_SIDES = ['light', 'dark'];
 
 export const bugs: BugInterface[] = [
     { name: "דבורת דבש", image: "/images/honey-bee.jpg" },

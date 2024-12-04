@@ -1,5 +1,6 @@
 export const SITES = ['Revadim North', 'Revadim East', 'Revadim South', 'Galon East', 'Galon West', 'Mishmar Hanegev'];
 export const TREATMENTS = ['Control', 'High variety mix', 'Low variety mix'];
+export const SAMPLE_SIDES = ['light', 'dark'];
 export const bugs = [
     { name: "דבורת דבש", image: "/images/honey-bee.jpg" },
     { name: "רחפן", image: "/api/placeholder/60/60" },

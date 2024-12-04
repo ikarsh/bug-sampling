@@ -6,12 +6,14 @@
     <title>Bug Sampling Tool</title>
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/setup-screen.css">
-    <link rel="stylesheet" href="styles/sampling-screen.css">
+    <link rel="stylesheet" href="styles/sample-screen.css">
+    <link rel="stylesheet" href="styles/sample-selection-screen.css">
     <script type="module" src="dist/main.js" defer></script>
 </head>
 <body>
     <div class="screen" data-screen="session-form-screen" data-active="true">
         <form class="data-form" id="sessionForm">
+            <!-- Date (automatically set) -->
             <div class="form-group">
                 <label>Date</label>
                 <div class="input-container">
@@ -19,13 +21,15 @@
                 </div>
             </div>
             
+            <!-- Time (automatically set) -->
             <div class="form-group">
                 <label>Time</label>
                 <div class="input-container">
                     <input type="text" id="samplingHour" readonly>
                 </div>
             </div>
-        
+            
+            <!-- Location (automatically set, if given permission) -->
             <div class="form-group">
                 <label>Location</label>
                 <div class="input-container">
@@ -34,7 +38,7 @@
                 </div>
             </div>
             
-        
+            <!-- Treatment (populated dynamically) -->
             <div class="form-group">
                 <label for="treatment">Treatment</label>
                 <div class="input-container">
@@ -44,6 +48,7 @@
                 </div>
             </div>
         
+            <!-- Site (populated dynamically) -->
             <div class="form-group">
                 <label for="site">Site</label>
                 <div class="input-container">
@@ -53,9 +58,22 @@
                 </div>
             </div>
             
+            <!-- Amount of trees (number) -->
+            <div class="form-group">
+                <label for="treeAmount">Amount of trees</label>
+                <div class="input-container">
+                    <input type="number" id="treeAmount" value="6" min="1" required>
+                </div>
+            </div>
             
             <button type="submit">Start Session</button>
         </form>
+    </div>
+
+    <div class="screen" data-screen="sample-selection-screen" data-active="false">
+        <!-- Filled dynamically -->
+        <h1 id="sample-selection-title">Select Sample</h1>
+        <div id="sample-selection-grid"></div>
     </div>
 
     <div class="screen" data-screen="sample-form-screen" data-active="false">
