@@ -16,7 +16,6 @@
     margin-left: auto;
     margin-right: auto;
 }
-
 .bug-cell {
     aspect-ratio: 1;
     border: 1px solid #ccc;
@@ -27,21 +26,31 @@
     padding: 5px;
     background: #f9f9f9;
     touch-action: manipulation;
-    min-height: 100px;
     border-radius: 4px;
     transition: transform 0.1s;
+    /* add these */
+    min-height: 0;  /* allows flex children to shrink below their min content size */
+    overflow: hidden; /* prevents content from escaping */
+}
+
+.bug-cell img {
+    width: 60%;
+    height: 60%;  /* changed from auto to maintain aspect ratio */
+    object-fit: contain;  /* ensures image fits without distortion */
+    margin: 5px 0;
+    flex-shrink: 1;  /* allows image to shrink if needed */
 }
 
 .bug-cell:active {
     transform: scale(0.98);
 }
 
-.bug-cell img {
+/* .bug-cell img {
     width: 60%;
     height: auto;
     object-fit: contain;
     margin: 5px 0;
-}
+} */
 
 .bug-name {
     font-size: 12px;
