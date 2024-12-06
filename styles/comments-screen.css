@@ -1,13 +1,13 @@
-.comments-screen textarea {
+/* styles/comments-screen.css */
+[data-screen="comments-screen"] textarea {
     width: 100%;
-    min-height: 150px;
+    height: fit-content;
+    min-height: 150px;  /* gives a reasonable starting size */
     padding: 12px;
     margin: 10px 0;
     border: 1px solid #ddd;
     border-radius: 4px;
     resize: vertical;
-}
-
-.comments-screen .form-group {
-    width: 100%;
+    font-size: 16px;
+    line-height: 1;
 }

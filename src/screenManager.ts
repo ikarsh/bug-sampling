@@ -129,7 +129,10 @@ export class ScreenManager {
         // wait for timer to finish
         console.log(`Starting timer for ${sample_setup.samplingLength} seconds`);
         await timer(document.getElementById('timer')!, sample_setup.samplingLength);
-
+        
+        // clear previous comments
+        (document.getElementById('comments') as HTMLTextAreaElement).value = '';
+        
         this.showScreen('comments-screen');
         const comments = await awaitForm('commentsForm', () => {
             return (document.getElementById('comments') as HTMLTextAreaElement).value;

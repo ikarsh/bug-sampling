@@ -108,6 +108,8 @@ export class ScreenManager {
             // wait for timer to finish
             console.log(`Starting timer for ${sample_setup.samplingLength} seconds`);
             yield timer(document.getElementById('timer'), sample_setup.samplingLength);
+            // clear previous comments
+            document.getElementById('comments').value = '';
             this.showScreen('comments-screen');
             const comments = yield awaitForm('commentsForm', () => {
                 return document.getElementById('comments').value;
