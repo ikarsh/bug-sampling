@@ -189,45 +189,40 @@ function awaitForm<T>(form: string, handler: () => T): Promise<T> {
 }
 
 function populateSampleSelectionScreen(grid: HTMLElement, sampleAmount: number, startSample: (row: string, col: number) => void) {
-    // setup column labels
-    const colLabels = document.createElement('div');
-    colLabels.className = 'col-labels';
-    Array.from({length: sampleAmount}, (_, i) => i + 1).forEach(num => {
-        const div = document.createElement('div');
-        div.textContent = num.toString();
-        colLabels.appendChild(div);
-    });
-    grid.appendChild(colLabels);
+    // Set grid columns CSS variable
+    document.documentElement.style.setProperty('--grid-columns', sampleAmount.toString());
+    
+    // Empty cell for top-left corner
+    const cornerCell = document.createElement('div');
+    grid.appendChild(cornerCell);
+    
+    // Column numbers
+    for (let i = 1; i <= sampleAmount; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'col-label';
+        cell.textContent = i.toString();
+        grid.appendChild(cell);
+    }
 
-    // setup grid
-    SAMPLE_SIDES.forEach((row, nrow) => {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'grid-row';
-        
+    // Sample rows
+    SAMPLE_SIDES.forEach(row => {
+        // Row label (light/dark)
         const label = document.createElement('div');
         label.className = 'row-label';
         label.textContent = row;
-        rowDiv.appendChild(label);
+        grid.appendChild(label);
         
-        const cellsDiv = document.createElement('div');
-        cellsDiv.className = 'cells-grid';
-        Array.from({length: sampleAmount}, (_, i) => i + 1).forEach(col => {
+        // Sample cells
+        for (let col = 1; col <= sampleAmount; col++) {
             const cell = document.createElement('div');
             cell.className = 'sample-cell';
             cell.textContent = `${row}${col}`;
             cell.dataset.id = `${row}${col}`;
             cell.addEventListener('click', () => {
-                console.log(`clicked ${row}${col}`);
-
-                // Mark this square as done
                 cell.classList.add('completed');
-
                 startSample(row, col);
             }, { once: true });
-            cellsDiv.appendChild(cell);
-        });
-        rowDiv.appendChild(cellsDiv);
-        
-        grid.appendChild(rowDiv);
+            grid.appendChild(cell);
+        }
     });
 }
