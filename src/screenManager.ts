@@ -7,8 +7,7 @@ import { Sample, SessionSetup, Treatment } from "./types.js";
 import { LocationTracker } from "./utils/locationTracker.js";
 import { timer } from "./utils/timer.js";
 
-export type Screen = 'session-form-screen' | 'sample-selection-screen' | 'sample-form-screen' | 'sample-screen';
-
+export type Screen = 'session-form-screen' | 'sample-selection-screen' | 'sample-form-screen' | 'sample-screen' | 'comments-screen';
 export class ScreenManager {
     private currentScreen: Screen;
     private screens: Map<Screen, HTMLElement>;
@@ -127,16 +126,23 @@ export class ScreenManager {
 
         this.bugDisplay = new BugDisplay(document.getElementById('bugGrid')!);
         this.showScreen('sample-screen');
-
         // wait for timer to finish
         console.log(`Starting timer for ${sample_setup.samplingLength} seconds`);
         await timer(document.getElementById('timer')!, sample_setup.samplingLength);
 
+        this.showScreen('comments-screen');
+        const comments = await awaitForm('commentsForm', () => {
+            return (document.getElementById('comments') as HTMLTextAreaElement).value;
+        });
+
+
         // store sample results
-        this.samples[col - 1][row === 'light'? 0 : 1] =  {
+        this.samples[col - 1][row === 'light'? 0 : 1] = {
             phenologicalState: sample_setup.phenologicalState,
             femaleFlowerPercentage: sample_setup.femaleFlowerPercentage,
+            samplingLength: sample_setup.samplingLength,
             counts: this.bugDisplay.getCounts(),
+            comments,
         } as Sample;
         if (this.samples.every(row => row.every(sample => sample !== null))) {
             console.log("All samples collected", this.sessionSetup!, this.samples);

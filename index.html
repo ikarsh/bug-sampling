@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles/setup-screen.css">
     <link rel="stylesheet" href="styles/sample-screen.css">
     <link rel="stylesheet" href="styles/sample-selection-screen.css">
+    <link rel="stylesheet" href="styles/comments-screen.css">
     <script type="module" src="dist/main.js" defer></script>
 </head>
 <body>
@@ -113,6 +114,19 @@
         <div class="sample-name" id="sample-name-1"></div>
         <div id="timer"></div>
         <div class="grid-container" id="bugGrid"></div>
+    </div>
+
+    <div class="screen" data-screen="comments-screen" data-active="false">
+        <div class="sample-name"></div>
+        <form class="data-form" id="commentsForm">
+            <div class="form-group">
+                <label for="comments">Comments</label>
+                <div class="input-container">
+                    <textarea id="comments"></textarea>
+                </div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
     </div>
 </body>
 </html>

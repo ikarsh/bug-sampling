@@ -25,6 +25,7 @@ export interface Sample {
   femaleFlowerPercentage: number;
   samplingLength: number;
   counts: number[];
+  comments: string;
 }
 
 export type Site = typeof SITES[number];

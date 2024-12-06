@@ -108,11 +108,17 @@ export class ScreenManager {
             // wait for timer to finish
             console.log(`Starting timer for ${sample_setup.samplingLength} seconds`);
             yield timer(document.getElementById('timer'), sample_setup.samplingLength);
+            this.showScreen('comments-screen');
+            const comments = yield awaitForm('commentsForm', () => {
+                return document.getElementById('comments').value;
+            });
             // store sample results
             this.samples[col - 1][row === 'light' ? 0 : 1] = {
                 phenologicalState: sample_setup.phenologicalState,
                 femaleFlowerPercentage: sample_setup.femaleFlowerPercentage,
+                samplingLength: sample_setup.samplingLength,
                 counts: this.bugDisplay.getCounts(),
+                comments,
             };
             if (this.samples.every(row => row.every(sample => sample !== null))) {
                 console.log("All samples collected", this.sessionSetup, this.samples);
