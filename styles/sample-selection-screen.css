@@ -83,3 +83,22 @@
       font-size: 18px;
   }
 }
+
+/* In sample-selection-screen.css, add: */
+.reset-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background: white;
+  color: #ff4444;
+  border: 2px solid #ff4444;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reset-btn:hover {
+  background: #ff4444;
+  color: white;
+}

@@ -53,6 +53,13 @@ export class ScreenManager {
             console.log("undo clicked");
             this.bugDisplay?.undo();
         });
+        // reset button
+        document.getElementById('resetButton')?.addEventListener('click', () => {
+            if (confirm('Are you sure? This will delete all collected data.')) {
+                this.stateManager.clearSession();
+                this.showScreen('session-form-screen');
+            }
+        });
         // If we have existing session setup, skip to sample selection
         const existingSetup = this.stateManager.getSetup();
         if (existingSetup) {
