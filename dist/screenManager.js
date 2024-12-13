@@ -1,18 +1,14 @@
 // ui.ts
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { BugDisplay } from "./bugDisplay.js";
 import { SAMPLE_SIDES } from "./config.js";
 import { LocationTracker } from "./utils/locationTracker.js";
 import { timer } from "./utils/timer.js";
 export class ScreenManager {
+    currentScreen;
+    screens;
+    bugDisplay;
+    sessionSetup;
+    samples;
     constructor() {
         this.currentScreen = 'session-form-screen';
         this.screens = new Map();
@@ -50,87 +46,80 @@ export class ScreenManager {
         this.toggleScreen(true);
     }
     // event handling
-    run() {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            this.toggleScreen(true);
-            let locationTracker = new LocationTracker();
-            // undo button
-            (_a = document.getElementById('undoButton')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => {
-                var _a;
-                console.log("undo clicked");
-                (_a = this.bugDisplay) === null || _a === void 0 ? void 0 : _a.undo();
-            });
-            this.sessionSetup = yield awaitForm('sessionForm', () => {
-                console.log("session form submitted");
-                return {
-                    date: new Date(),
-                    location: locationTracker.getCurrentLocation(),
-                    site: document.getElementById('site').value,
-                    treatment: document.getElementById('treatment').value,
-                    sampleAmount: parseInt(document.getElementById('treeAmount').value),
-                };
-            });
-            let sampleAmount = this.sessionSetup.sampleAmount;
-            console.log("Got session setup", this.sessionSetup);
-            // 2D array of samples, light side and dark side
-            this.samples = Array.from({ length: sampleAmount }, () => [null, null]);
-            // populate the sample selection screen
-            let sampleSelectionElement = document.getElementById('sample-selection-grid');
-            console.log("Got sample selection element", sampleSelectionElement);
-            populateSampleSelectionScreen(sampleSelectionElement, sampleAmount, (row, col) => {
-                this.startSample(row, col);
-            });
-            this.showScreen('sample-selection-screen');
+    async run() {
+        this.toggleScreen(true);
+        let locationTracker = new LocationTracker();
+        // undo button
+        document.getElementById('undoButton')?.addEventListener('click', () => {
+            console.log("undo clicked");
+            this.bugDisplay?.undo();
         });
-    }
-    startSample(row, col) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log(`Starting sample ${row}${col}`);
-            // Set the title to the correct sample name.
-            let sequence = document.getElementsByClassName('sample-name');
-            console.log("sequence", sequence);
-            let name = `Tree ${col}, ${row}`;
-            Array.from(sequence).forEach(e => e.textContent = name);
-            console.log("name", name);
-            this.showScreen('sample-form-screen');
-            let sample_setup = yield awaitForm('sampleForm', () => {
-                console.log("sample form submitted");
-                return {
-                    phenologicalState: parseInt(document.getElementById('PhenologicalState').value),
-                    femaleFlowerPercentage: parseInt(document.getElementById('FemaleFlowerPercentage').value),
-                    samplingLength: parseInt(document.getElementById('samplingLength').value),
-                };
-            });
-            console.log("Got sample setup", sample_setup);
-            this.bugDisplay = new BugDisplay(document.getElementById('bugGrid'));
-            this.showScreen('sample-screen');
-            // wait for timer to finish
-            console.log(`Starting timer for ${sample_setup.samplingLength} seconds`);
-            yield timer(document.getElementById('timer'), sample_setup.samplingLength);
-            // clear previous comments
-            document.getElementById('comments').value = '';
-            this.showScreen('comments-screen');
-            const comments = yield awaitForm('commentsForm', () => {
-                return document.getElementById('comments').value;
-            });
-            // store sample results
-            this.samples[col - 1][row === 'light' ? 0 : 1] = {
-                phenologicalState: sample_setup.phenologicalState,
-                femaleFlowerPercentage: sample_setup.femaleFlowerPercentage,
-                samplingLength: sample_setup.samplingLength,
-                counts: this.bugDisplay.getCounts(),
-                comments,
+        this.sessionSetup = await awaitForm('sessionForm', () => {
+            console.log("session form submitted");
+            return {
+                date: new Date(),
+                location: locationTracker.getCurrentLocation(),
+                site: document.getElementById('site').value,
+                treatment: document.getElementById('treatment').value,
+                sampleAmount: parseInt(document.getElementById('treeAmount').value),
             };
-            if (this.samples.every(row => row.every(sample => sample !== null))) {
-                console.log("All samples collected", this.sessionSetup, this.samples);
-                // this.downloadCsv('bugs.csv', this.generateFullCsv(session_setup, this.samples as Sample[][]));
-                this.showScreen('session-form-screen');
-            }
-            else {
-                this.showScreen('sample-selection-screen');
-            }
         });
+        let sampleAmount = this.sessionSetup.sampleAmount;
+        console.log("Got session setup", this.sessionSetup);
+        this.samples = Array(sampleAmount).fill(null).map(() => Object.fromEntries(SAMPLE_SIDES.map(side => [side, null])));
+        // populate the sample selection screen
+        let sampleSelectionElement = document.getElementById('sample-selection-grid');
+        console.log("Got sample selection element", sampleSelectionElement);
+        populateSampleSelectionScreen(sampleSelectionElement, sampleAmount, (row, col) => {
+            this.startSample(row, col);
+        });
+        this.showScreen('sample-selection-screen');
+    }
+    async startSample(row, col) {
+        console.log(`Starting sample ${row}${col}`);
+        // Set the title to the correct sample name.
+        let sequence = document.getElementsByClassName('sample-name');
+        console.log("sequence", sequence);
+        let name = `Tree ${col}, ${row}`;
+        Array.from(sequence).forEach(e => e.textContent = name);
+        console.log("name", name);
+        this.showScreen('sample-form-screen');
+        let sample_setup = await awaitForm('sampleForm', () => {
+            console.log("sample form submitted");
+            return {
+                phenologicalState: parseInt(document.getElementById('PhenologicalState').value),
+                femaleFlowerPercentage: parseInt(document.getElementById('FemaleFlowerPercentage').value),
+                samplingLength: parseInt(document.getElementById('samplingLength').value),
+            };
+        });
+        console.log("Got sample setup", sample_setup);
+        this.bugDisplay = new BugDisplay(document.getElementById('bugGrid'));
+        this.showScreen('sample-screen');
+        // wait for timer to finish
+        console.log(`Starting timer for ${sample_setup.samplingLength} seconds`);
+        await timer(document.getElementById('timer'), sample_setup.samplingLength);
+        // clear previous comments
+        document.getElementById('comments').value = '';
+        this.showScreen('comments-screen');
+        const comments = await awaitForm('commentsForm', () => {
+            return document.getElementById('comments').value;
+        });
+        // store sample results
+        this.samples[col - 1][row] = {
+            phenologicalState: sample_setup.phenologicalState,
+            femaleFlowerPercentage: sample_setup.femaleFlowerPercentage,
+            samplingLength: sample_setup.samplingLength,
+            counts: this.bugDisplay.getCounts(),
+            comments,
+        };
+        if (this.samples.every(row => SAMPLE_SIDES.every(side => row[side] !== null))) {
+            console.log("All samples collected", this.sessionSetup, this.samples);
+            // this.downloadCsv('bugs.csv', this.generateFullCsv(session_setup, this.samples as Sample[][]));
+            this.showScreen('session-form-screen');
+        }
+        else {
+            this.showScreen('sample-selection-screen');
+        }
     }
     generateFullCsv(setup, samples) {
         // // TODO needs hour also, probably.
@@ -173,7 +162,6 @@ function populateSampleSelectionScreen(grid, sampleAmount, startSample) {
     }
     // Sample rows
     SAMPLE_SIDES.forEach(row => {
-        // Row label (light/dark)
         const label = document.createElement('div');
         label.className = 'row-label';
         label.textContent = row;

@@ -3,7 +3,7 @@
 import { BugDisplay } from "./bugDisplay.js";
 import { bugs, SAMPLE_SIDES, SITES, TREATMENTS } from "./config.js";
 // import { SessionFormHandler } from "./sessionFormHandler";
-import { Sample, SessionSetup, Treatment } from "./types.js";
+import { Sample, SampleSide, SessionSetup, Treatment } from "./types.js";
 import { LocationTracker } from "./utils/locationTracker.js";
 import { timer } from "./utils/timer.js";
 
@@ -14,7 +14,7 @@ export class ScreenManager {
 
     private bugDisplay: BugDisplay;
     private sessionSetup: SessionSetup | null;
-    private samples: (Sample | null)[][];
+    private samples: Record<SampleSide, Sample | null>[];
     
     constructor() {
         this.currentScreen = 'session-form-screen';
@@ -88,9 +88,9 @@ export class ScreenManager {
 
         console.log("Got session setup", this.sessionSetup);
         
-        // 2D array of samples, light side and dark side
-        this.samples = Array.from({length: sampleAmount}, () => [null, null]);
-        
+        this.samples = Array(sampleAmount).fill(null).map(() => 
+            Object.fromEntries(SAMPLE_SIDES.map(side => [side, null]))
+        );
         // populate the sample selection screen
         let sampleSelectionElement = document.getElementById('sample-selection-grid')!;
         console.log("Got sample selection element", sampleSelectionElement);
@@ -101,7 +101,7 @@ export class ScreenManager {
         this.showScreen('sample-selection-screen');
     }
 
-    private async startSample(row: string, col: number) {
+    private async startSample(row: SampleSide, col: number) {
         console.log(`Starting sample ${row}${col}`);
 
         // Set the title to the correct sample name.
@@ -140,14 +140,14 @@ export class ScreenManager {
 
 
         // store sample results
-        this.samples[col - 1][row === 'light'? 0 : 1] = {
+        this.samples[col - 1][row] = {
             phenologicalState: sample_setup.phenologicalState,
             femaleFlowerPercentage: sample_setup.femaleFlowerPercentage,
             samplingLength: sample_setup.samplingLength,
             counts: this.bugDisplay.getCounts(),
             comments,
         } as Sample;
-        if (this.samples.every(row => row.every(sample => sample !== null))) {
+        if (this.samples.every(row => SAMPLE_SIDES.every(side => row[side] !== null))) {
             console.log("All samples collected", this.sessionSetup!, this.samples);
             // this.downloadCsv('bugs.csv', this.generateFullCsv(session_setup, this.samples as Sample[][]));
 
@@ -158,7 +158,7 @@ export class ScreenManager {
         }
     }
 
-    private generateFullCsv(setup: SessionSetup, samples: Sample[][]): string {
+    private generateFullCsv(setup: SessionSetup, samples: Record<SampleSide, Sample>[]): string {
         // // TODO needs hour also, probably.
         // const setupInfo = `Date,${setup.date}\nLocation,${setup.location}\nSite,${setup.site}\nType,${setup.treatment}\n\n`;
         // const sampleInfo = samples.map(sample => {
@@ -188,7 +188,7 @@ function awaitForm<T>(form: string, handler: () => T): Promise<T> {
     });
 }
 
-function populateSampleSelectionScreen(grid: HTMLElement, sampleAmount: number, startSample: (row: string, col: number) => void) {
+function populateSampleSelectionScreen(grid: HTMLElement, sampleAmount: number, startSample: (row: SampleSide, col: number) => void) {
     // Set grid columns CSS variable
     document.documentElement.style.setProperty('--grid-columns', sampleAmount.toString());
     
@@ -206,7 +206,6 @@ function populateSampleSelectionScreen(grid: HTMLElement, sampleAmount: number, 
 
     // Sample rows
     SAMPLE_SIDES.forEach(row => {
-        // Row label (light/dark)
         const label = document.createElement('div');
         label.className = 'row-label';
         label.textContent = row;

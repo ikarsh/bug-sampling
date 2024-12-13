@@ -15,5 +15,5 @@ export const bugs = [
     { name: "צרעה", image: "./images/wasp.jpg" },
     { name: "פרפר", image: "./images/lepidoptera.jpg" },
     { name: "נמלה", image: "./images/ant.jpg" },
-    { name: "אחר", image: "/api/placeholder/60/60" },
+    { name: "אחר", image: "./images/other.jpg" },
 ];

@@ -1,7 +1,9 @@
 export class LocationTracker {
+    watchId = null;
+    currentLocation = 'N/A';
+    locationInput;
+    statusSpan;
     constructor() {
-        this.watchId = null;
-        this.currentLocation = 'N/A';
         this.locationInput = document.getElementById('location');
         this.statusSpan = document.getElementById('locationStatus');
         this.initializeLocation();

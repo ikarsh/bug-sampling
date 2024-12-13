@@ -1,8 +1,9 @@
 import { bugs } from './config.js';
 export class BugDisplay {
+    counts = new Array(bugs.length).fill(0);
+    actions = [];
+    grid;
     constructor(gridElement) {
-        this.counts = new Array(bugs.length).fill(0);
-        this.actions = [];
         this.grid = gridElement;
         this.setupGrid();
     }
