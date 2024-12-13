@@ -1,5 +1,6 @@
 import { BugDisplay } from "./bugDisplay.js";
 import { SAMPLE_SIDES } from "./config.js";
+import { generateAndDownloadCsv } from "./excelGenerator.js";
 import { SessionStateManager } from "./sessionState.js";
 import { LocationTracker } from "./utils/locationTracker.js";
 import { timer } from "./utils/timer.js";
@@ -64,10 +65,13 @@ export class ScreenManager {
         let resetButton = clean_listeners(document.getElementById('resetButton'));
         resetButton.addEventListener('click', () => {
             if (confirm('Are you sure? This will delete all collected data.')) {
-                this.stateManager.clearSession();
-                window.location.reload();
+                this.reset();
             }
         });
+    }
+    reset() {
+        this.stateManager.clearSession();
+        window.location.reload();
     }
     async selectSessionSetup() {
         this.showScreen('session-form-screen');
@@ -134,29 +138,15 @@ export class ScreenManager {
         let samples = this.stateManager.getSamples();
         if (this.stateManager.allSamplesCollected()) {
             console.log("All samples collected", samples);
-            // this.downloadCsv('bugs.csv', this.generateFullCsv(session_setup, this.samples as Sample[][]));
-            this.stateManager.clearSession();
-            this.showScreen('session-form-screen');
+            const setup = this.stateManager.getSetup();
+            console.log("Generating Excel");
+            generateAndDownloadCsv(setup, samples);
+            this.reset();
+            console.log("Excel generated and downloaded");
         }
         else {
             this.setupSampleSelection();
         }
-    }
-    generateFullCsv(setup, samples) {
-        // // TODO needs hour also, probably.
-        // const setupInfo = `Date,${setup.date}\nLocation,${setup.location}\nSite,${setup.site}\nType,${setup.treatment}\n\n`;
-        // const sampleInfo = samples.map(sample => {
-        //     return `Phenological State,${sample.phenologicalState}\nFemale Flower Percentage,${sample.femaleFlowerPercentage}\n${bugs.map((bug, index) => `${bug.name},${sample.counts[index]}`).join('\n')}\n`;
-        // }).join('\n');
-        // return setupInfo + sampleInfo;
-        return "";
-    }
-    downloadCsv(filename, content) {
-        // const blob = new Blob([content], { type: 'text/csv' });
-        // const a = document.createElement('a');
-        // a.href = URL.createObjectURL(blob);
-        // a.download = filename;
-        // a.click();
     }
 }
 function awaitForm(form, handler) {
