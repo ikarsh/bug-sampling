@@ -10,11 +10,19 @@ export class ScreenManager {
     stateManager;
     constructor() {
         this.stateManager = new SessionStateManager();
-        this.currentScreen = this.stateManager.getCurrentScreen();
-        this.screens = new Map();
         this.bugDisplay = new BugDisplay(document.getElementById('bugGrid'));
+        this.screens = new Map();
         this.initialize_screens();
-        this.run();
+        this.currentScreen = this.stateManager.getCurrentScreen();
+        this.initializeButtons();
+        // If we have existing session setup, skip to sample selection
+        const existingSetup = this.stateManager.getSetup();
+        if (existingSetup) {
+            this.setupSampleSelection();
+        }
+        else {
+            this.selectSessionSetup();
+        }
     }
     // screen management
     initialize_screens() {
@@ -45,28 +53,25 @@ export class ScreenManager {
         this.toggleScreen(true);
     }
     // event handling
-    async run() {
-        this.toggleScreen(true);
-        let locationTracker = new LocationTracker();
+    initializeButtons() {
         // undo button
-        document.getElementById('undoButton')?.addEventListener('click', () => {
+        let undoButton = clean_listeners(document.getElementById('undoButton'));
+        undoButton.addEventListener('click', () => {
             console.log("undo clicked");
             this.bugDisplay?.undo();
         });
         // reset button
-        document.getElementById('resetButton')?.addEventListener('click', () => {
+        let resetButton = clean_listeners(document.getElementById('resetButton'));
+        resetButton.addEventListener('click', () => {
             if (confirm('Are you sure? This will delete all collected data.')) {
                 this.stateManager.clearSession();
-                this.showScreen('session-form-screen');
+                window.location.reload();
             }
         });
-        // If we have existing session setup, skip to sample selection
-        const existingSetup = this.stateManager.getSetup();
-        if (existingSetup) {
-            this.setupSampleSelection();
-            return;
-        }
-        // Otherwise wait for new session setup
+    }
+    async selectSessionSetup() {
+        this.showScreen('session-form-screen');
+        let locationTracker = new LocationTracker();
         const sessionSetup = await awaitForm('sessionForm', () => {
             console.log("session form submitted");
             return {
@@ -82,6 +87,7 @@ export class ScreenManager {
         this.setupSampleSelection();
     }
     setupSampleSelection() {
+        // this can be more efficient, not re-rendering the whole grid every time
         let sampleSelectionElement = document.getElementById('sample-selection-grid');
         const sessionSetup = this.stateManager.getSetup();
         let sampleAmount = sessionSetup.sampleAmount;
@@ -156,7 +162,8 @@ export class ScreenManager {
 function awaitForm(form, handler) {
     console.log(`awaiting form ${form}`);
     return new Promise(resolve => {
-        document.getElementById(form).addEventListener('submit', (e) => {
+        let formElement = clean_listeners(document.getElementById(form));
+        formElement.addEventListener('submit', (e) => {
             e.preventDefault();
             resolve(handler());
         }, { once: true });
@@ -189,6 +196,7 @@ function populateSampleSelectionScreen(grid, sampleAmount, startSample, completi
                 cell.classList.add('completed');
             }
             else {
+                // this is fine as the grid is re-rendered every time. But it is fishy.
                 cell.addEventListener('click', () => {
                     cell.classList.add('completed');
                     startSample(row, col);
@@ -197,4 +205,9 @@ function populateSampleSelectionScreen(grid, sampleAmount, startSample, completi
             grid.appendChild(cell);
         }
     });
+}
+function clean_listeners(element) {
+    const clone = element.cloneNode(true);
+    element.parentNode.replaceChild(clone, element);
+    return clone;
 }
