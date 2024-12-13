@@ -1,20 +1,18 @@
-// ui.ts
 import { BugDisplay } from "./bugDisplay.js";
 import { SAMPLE_SIDES } from "./config.js";
+import { SessionStateManager } from "./sessionState.js";
 import { LocationTracker } from "./utils/locationTracker.js";
 import { timer } from "./utils/timer.js";
 export class ScreenManager {
     currentScreen;
     screens;
     bugDisplay;
-    sessionSetup;
-    samples;
+    stateManager;
     constructor() {
-        this.currentScreen = 'session-form-screen';
+        this.stateManager = new SessionStateManager();
+        this.currentScreen = this.stateManager.getCurrentScreen();
         this.screens = new Map();
         this.bugDisplay = new BugDisplay(document.getElementById('bugGrid'));
-        this.sessionSetup = null;
-        this.samples = [];
         this.initialize_screens();
         this.run();
     }
@@ -43,6 +41,7 @@ export class ScreenManager {
         console.log(`showing screen ${name}`);
         this.toggleScreen(false);
         this.currentScreen = name;
+        this.stateManager.setCurrentScreen(name);
         this.toggleScreen(true);
     }
     // event handling
@@ -54,7 +53,14 @@ export class ScreenManager {
             console.log("undo clicked");
             this.bugDisplay?.undo();
         });
-        this.sessionSetup = await awaitForm('sessionForm', () => {
+        // If we have existing session setup, skip to sample selection
+        const existingSetup = this.stateManager.getSetup();
+        if (existingSetup) {
+            this.setupSampleSelection();
+            return;
+        }
+        // Otherwise wait for new session setup
+        const sessionSetup = await awaitForm('sessionForm', () => {
             console.log("session form submitted");
             return {
                 date: new Date(),
@@ -64,25 +70,24 @@ export class ScreenManager {
                 sampleAmount: parseInt(document.getElementById('treeAmount').value),
             };
         });
-        let sampleAmount = this.sessionSetup.sampleAmount;
-        console.log("Got session setup", this.sessionSetup);
-        this.samples = Array(sampleAmount).fill(null).map(() => Object.fromEntries(SAMPLE_SIDES.map(side => [side, null])));
-        // populate the sample selection screen
+        console.log("Got session setup", sessionSetup);
+        this.stateManager.setSetup(sessionSetup);
+        this.setupSampleSelection();
+    }
+    setupSampleSelection() {
         let sampleSelectionElement = document.getElementById('sample-selection-grid');
-        console.log("Got sample selection element", sampleSelectionElement);
-        populateSampleSelectionScreen(sampleSelectionElement, sampleAmount, (row, col) => {
-            this.startSample(row, col);
-        });
+        const sessionSetup = this.stateManager.getSetup();
+        let sampleAmount = sessionSetup.sampleAmount;
+        const completionGrid = this.stateManager.getCompletionGrid();
+        populateSampleSelectionScreen(sampleSelectionElement, sampleAmount, (row, col) => this.startSample(row, col), completionGrid);
         this.showScreen('sample-selection-screen');
     }
     async startSample(row, col) {
         console.log(`Starting sample ${row}${col}`);
         // Set the title to the correct sample name.
         let sequence = document.getElementsByClassName('sample-name');
-        console.log("sequence", sequence);
         let name = `Tree ${col}, ${row}`;
         Array.from(sequence).forEach(e => e.textContent = name);
-        console.log("name", name);
         this.showScreen('sample-form-screen');
         let sample_setup = await awaitForm('sampleForm', () => {
             console.log("sample form submitted");
@@ -105,20 +110,23 @@ export class ScreenManager {
             return document.getElementById('comments').value;
         });
         // store sample results
-        this.samples[col - 1][row] = {
+        const sample = {
             phenologicalState: sample_setup.phenologicalState,
             femaleFlowerPercentage: sample_setup.femaleFlowerPercentage,
             samplingLength: sample_setup.samplingLength,
             counts: this.bugDisplay.getCounts(),
             comments,
         };
-        if (this.samples.every(row => SAMPLE_SIDES.every(side => row[side] !== null))) {
-            console.log("All samples collected", this.sessionSetup, this.samples);
+        this.stateManager.setSample(col - 1, row, sample);
+        let samples = this.stateManager.getSamples();
+        if (this.stateManager.allSamplesCollected()) {
+            console.log("All samples collected", samples);
             // this.downloadCsv('bugs.csv', this.generateFullCsv(session_setup, this.samples as Sample[][]));
+            this.stateManager.clearSession();
             this.showScreen('session-form-screen');
         }
         else {
-            this.showScreen('sample-selection-screen');
+            this.setupSampleSelection();
         }
     }
     generateFullCsv(setup, samples) {
@@ -147,10 +155,10 @@ function awaitForm(form, handler) {
         }, { once: true });
     });
 }
-function populateSampleSelectionScreen(grid, sampleAmount, startSample) {
+function populateSampleSelectionScreen(grid, sampleAmount, startSample, completionGrid) {
     // Set grid columns CSS variable
     document.documentElement.style.setProperty('--grid-columns', sampleAmount.toString());
-    // Empty cell for top-left corner
+    grid.innerHTML = '';
     const cornerCell = document.createElement('div');
     grid.appendChild(cornerCell);
     // Column numbers
@@ -160,22 +168,25 @@ function populateSampleSelectionScreen(grid, sampleAmount, startSample) {
         cell.textContent = i.toString();
         grid.appendChild(cell);
     }
-    // Sample rows
+    // Row names
     SAMPLE_SIDES.forEach(row => {
         const label = document.createElement('div');
         label.className = 'row-label';
         label.textContent = row;
         grid.appendChild(label);
-        // Sample cells
         for (let col = 1; col <= sampleAmount; col++) {
             const cell = document.createElement('div');
             cell.className = 'sample-cell';
             cell.textContent = `${row}${col}`;
-            cell.dataset.id = `${row}${col}`;
-            cell.addEventListener('click', () => {
+            if (completionGrid[col - 1][row]) {
                 cell.classList.add('completed');
-                startSample(row, col);
-            }, { once: true });
+            }
+            else {
+                cell.addEventListener('click', () => {
+                    cell.classList.add('completed');
+                    startSample(row, col);
+                }, { once: true });
+            }
             grid.appendChild(cell);
         }
     });
