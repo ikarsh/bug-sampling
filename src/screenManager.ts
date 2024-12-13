@@ -1,6 +1,6 @@
 import { BugDisplay } from "./bugDisplay.js";
 import { SAMPLE_SIDES } from "./config.js";
-import { generateAndDownloadCsv } from "./excelGenerator.js";
+import { generateAndDownloadCsv } from "./csvGenerator.js";
 import { SessionStateManager } from "./sessionState.js";
 import { Sample, SampleSide, SessionSetup, Treatment } from "./types.js";
 import { LocationTracker } from "./utils/locationTracker.js";

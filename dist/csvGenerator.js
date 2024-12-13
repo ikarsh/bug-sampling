@@ -32,10 +32,11 @@ export function generateAndDownloadCsv(setup, samples) {
             rows.push(row);
         });
     });
-    // Combine into CSV
-    const csv = [headers, ...rows].join('\n');
+    // Combine into CSV with UTF-8 BOM at the start
+    const BOM = '\uFEFF'; // This is the UTF-8 BOM
+    const csv = BOM + [headers, ...rows].join('\n');
     // Create and download
-    const blob = new Blob([csv], { type: 'text/csv' });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = `bugs_${setup.site}_${setup.treatment}_${new Date().toISOString().split('T')[0]}.csv`;
