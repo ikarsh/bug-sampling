@@ -98,7 +98,7 @@
 
 /* Add at the END of sample-screen.css */
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .grid-container {
       grid-template-columns: repeat(2, 1fr);
       gap: 15px;
@@ -130,5 +130,44 @@
       transform: translateX(-50%);
       width: 80%;
       max-width: 300px;
+    }
+  } */
+
+  /* Replace the mobile part of sample-screen.css */
+
+@media (max-width: 768px) {
+    .grid-container {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;  /* Slightly reduced gap */
+      margin-top: 10px;  /* Less margin */
+    }
+  
+    .bug-cell {
+      aspect-ratio: 1.4;  /* Make them slightly rectangular */
+      padding: 5px;
+    }
+  
+    .bug-cell img {
+      width: 85%;  /* Slightly reduced to ensure fit */
+      height: 85%;
+    }
+  
+    .bug-name {
+      font-size: 14px;
+      margin-bottom: 2px;  /* Less margin */
+    }
+  
+    .bug-count {
+      font-size: 20px;
+    }
+  
+    .undo-btn {
+      padding: 12px 24px;  /* Slightly smaller but still tappable */
+      font-size: 16px;
+    }
+  
+    #timer {
+      font-size: 20px;  /* Smaller timer */
+      margin: 10px 0;  /* Less margin */
     }
   }
