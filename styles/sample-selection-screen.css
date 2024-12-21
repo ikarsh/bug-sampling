@@ -102,3 +102,23 @@
   background: #ff4444;
   color: white;
 }
+
+
+/* Add at the END of sample-selection-screen.css */
+
+@media (max-width: 768px) {
+  #sample-selection-grid {
+    width: 100%;  /* Was 80% */
+    font-size: 14px;
+    gap: 5px;
+  }
+
+  .row-label {
+    width: 20px;
+  }
+
+  .sample-cell {
+    font-size: 14px;
+    padding: 0;
+  }
+}

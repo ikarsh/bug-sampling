@@ -95,3 +95,40 @@
     /* sampling screen might want it between timer and grid */
     margin: 15px 0;
 }
+
+/* Add at the END of sample-screen.css */
+
+@media (max-width: 768px) {
+    .grid-container {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+  
+    .bug-cell {
+      padding: 10px;
+    }
+  
+    .bug-cell img {
+      width: 90%;
+      height: 90%;
+    }
+  
+    .bug-name {
+      font-size: 14px;
+    }
+  
+    .bug-count {
+      font-size: 24px;
+    }
+  
+    .undo-btn {
+      padding: 15px 30px;
+      font-size: 18px;
+      top: auto;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 300px;
+    }
+  }
