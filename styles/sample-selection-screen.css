@@ -14,10 +14,10 @@
   max-width: 800px;
   margin: 0 auto;
 }
+
 .row-label {
   font-weight: 600;
   color: #666;
-  /* add these for centering */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -78,13 +78,6 @@
   border-radius: 2px;
 }
 
-@media (min-width: 768px) {
-  .sample-cell {
-      font-size: 18px;
-  }
-}
-
-/* In sample-selection-screen.css, add: */
 .reset-btn {
   position: fixed;
   top: 20px;
@@ -103,51 +96,26 @@
   color: white;
 }
 
+@media (min-width: 768px) {
+  .sample-cell {
+    font-size: 18px;
+  }
+}
 
-/* Add at the END of sample-selection-screen.css */
+/* Mobile styles */
+@media (max-width: 768px) {
+  /* We want to remove body padding ONLY for the grid */
+  body [data-screen="sample-selection-screen"] {
+    padding-left: 0;
+    padding-right: 0;
+  }
 
-/* @media (max-width: 768px) {
   #sample-selection-grid {
     width: 100%;
-    font-size: 14px;
-    gap: 5px;
-  }
-
-  .row-label {
-    width: 20px;
-  }
-
-  .sample-cell {
-    font-size: 14px;
-    padding: 0;
-  }
-} */
-
-/* Replace the mobile part of sample-selection-screen.css */
-
-@media (max-width: 768px) {
-  [data-screen="sample-selection-screen"] {
-    padding: 10px;
-    width: auto;  /* Let it be natural width */
-  }
-
-  #sample-selection-grid {
     gap: 4px;
-    font-size: 14px;
-  }
-
-  .row-label {
-    width: 16px;
-    font-size: 12px;
-  }
-
-  .col-label {
-    font-size: 12px;
   }
 
   .sample-cell {
     aspect-ratio: 1.6;
-    font-size: 14px;
-    padding: 0;
   }
 }

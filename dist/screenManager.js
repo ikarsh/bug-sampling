@@ -103,7 +103,7 @@ export class ScreenManager {
         console.log(`Starting sample ${row}${col}`);
         // Set the title to the correct sample name.
         let sequence = document.getElementsByClassName('sample-name');
-        let name = `Tree ${col}, ${row}`;
+        let name = `${col}, ${row}`;
         Array.from(sequence).forEach(e => e.textContent = name);
         this.showScreen('sample-form-screen');
         let sample_setup = await awaitForm('sampleForm', () => {
@@ -181,7 +181,7 @@ function populateSampleSelectionScreen(grid, sampleAmount, startSample, completi
         for (let col = 1; col <= sampleAmount; col++) {
             const cell = document.createElement('div');
             cell.className = 'sample-cell';
-            cell.textContent = `${row}${col}`;
+            cell.textContent = `🌳`;
             if (completionGrid[col - 1][row]) {
                 cell.classList.add('completed');
             }

@@ -1,4 +1,3 @@
-
 /* styles/sampling-screen.css - Styles for the sampling grid */
 .sampling-screen {
     max-width: 1200px;
@@ -6,76 +5,90 @@
     padding: 20px;
 }
 
+/* Container to handle the layout */
+.sample-screen-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-top: 70px; /* Space for fixed header */
+}
+
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-top: 20px;
+    gap: 8px;  /* Reduced gap for denser layout */
     width: 100%;
     max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
+    /* padding: 8px; */
+    /* Make grid take remaining space */
+    flex: 1;
 }
+
 .bug-cell {
-    aspect-ratio: 1;
+    aspect-ratio: 1;  /* Keep squares for consistency */
     border: 1px solid #ccc;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 5px;
+    padding: 4px;  /* Smaller padding */
     background: #f9f9f9;
     touch-action: manipulation;
     border-radius: 4px;
     transition: transform 0.1s;
-    /* add these */
-    min-height: 0;  /* allows flex children to shrink below their min content size */
-    overflow: hidden; /* prevents content from escaping */
+    min-height: 0;
+    overflow: hidden;
 }
 
 .bug-cell img {
     width: 60%;
-    height: 60%;  /* changed from auto to maintain aspect ratio */
-    object-fit: contain;  /* ensures image fits without distortion */
-    margin: 5px 0;
-    flex-shrink: 1;  /* allows image to shrink if needed */
+    height: 60%;
+    object-fit: contain;
+    margin: 2px 0;  /* Reduced margins */
+    flex-shrink: 1;
 }
 
 .bug-cell:active {
     transform: scale(0.98);
 }
 
-/* .bug-cell img {
-    width: 60%;
-    height: auto;
-    object-fit: contain;
-    margin: 5px 0;
-} */
-
 .bug-name {
-    font-size: 12px;
+    font-size: 11px;  /* Slightly smaller font */
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 .bug-count {
     font-weight: bold;
-    font-size: 18px;
+    font-size: 16px;  /* Slightly smaller font */
     color: #4CAF50;
+}
+
+/* Fixed header area */
+.sample-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 10px;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    height: 60px;
 }
 
 #timer {
     text-align: center;
     font-size: 24px;
-    margin: 20px 0;
     font-weight: bold;
     color: #333;
+    margin: 0;
+    flex: 1;
 }
 
 .undo-btn {
-    position: fixed;
-    top: 20px;
-    left: 20px;
     padding: 10px 20px;
     background: #ff4444;
     color: white;
@@ -83,91 +96,81 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.2s;
+    margin-right: 20px;
 }
 
 .undo-btn:hover {
     background: #ff0000;
 }
 
-
-/* in sampling-screen.css */
 #sample-name-1 {
-    /* sampling screen might want it between timer and grid */
-    margin: 15px 0;
+    flex: 1;
+    text-align: center;
+    margin: 0;
 }
 
-/* Add at the END of sample-screen.css */
-
-/* @media (max-width: 768px) {
+/* Responsive grid layouts */
+@media (min-width: 769px) {
     .grid-container {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
+        grid-template-columns: repeat(4, 1fr);  /* Desktop: 4 columns */
     }
-  
-    .bug-cell {
-      padding: 10px;
-    }
-  
-    .bug-cell img {
-      width: 90%;
-      height: 90%;
-    }
-  
-    .bug-name {
-      font-size: 14px;
-    }
-  
-    .bug-count {
-      font-size: 24px;
-    }
-  
-    .undo-btn {
-      padding: 15px 30px;
-      font-size: 18px;
-      top: auto;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80%;
-      max-width: 300px;
-    }
-  } */
+}
 
-  /* Replace the mobile part of sample-screen.css */
-
-@media (max-width: 768px) {
+@media (max-width: 768px) and (min-width: 481px) {
     .grid-container {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;  /* Slightly reduced gap */
-      margin-top: 10px;  /* Less margin */
+        grid-template-columns: repeat(4, 1fr);  /* Tablet: 4 columns */
     }
-  
+}
+
+@media (max-width: 480px) {
+    .grid-container {
+        grid-template-columns: repeat(3, 1fr);  /* Phone: 3 columns */
+        gap: 6px;  /* Even smaller gap on phones */
+    }
+
     .bug-cell {
-      aspect-ratio: 1.4;  /* Make them slightly rectangular */
-      padding: 5px;
+        padding: 3px;
     }
-  
-    .bug-cell img {
-      width: 85%;  /* Slightly reduced to ensure fit */
-      height: 85%;
-    }
-  
+
     .bug-name {
-      font-size: 14px;
-      margin-bottom: 2px;  /* Less margin */
+        font-size: 10px;
     }
-  
+
     .bug-count {
-      font-size: 20px;
+        font-size: 14px;
     }
-  
+
     .undo-btn {
-      padding: 12px 24px;  /* Slightly smaller but still tappable */
-      font-size: 16px;
+        padding: 8px 16px;
+        font-size: 14px;
+        margin-right: 10px;
     }
-  
+
     #timer {
-      font-size: 20px;  /* Smaller timer */
-      margin: 10px 0;  /* Less margin */
+        font-size: 18px;
     }
-  }
+
+    .sample-header {
+        padding: 5px;
+        height: 50px;
+    }
+
+    .sample-screen-container {
+        padding-top: 60px;
+    }
+}
+
+/* In very small screens, make everything even more compact */
+@media (max-width: 360px) {
+    .grid-container {
+        gap: 4px;
+    }
+
+    .bug-cell {
+        padding: 2px;
+    }
+
+    .bug-name {
+        font-size: 9px;
+    }
+}

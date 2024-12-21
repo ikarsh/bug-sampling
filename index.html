@@ -108,13 +108,16 @@
             <button type="submit">Start Sample</button>
         </form>
     </div>
-
+    
     <div class="screen" data-screen="sample-screen" data-active="false">
-        
-        <button class="undo-btn" id="undoButton">Undo</button>
-        <div class="sample-name" id="sample-name-1"></div>
-        <div id="timer"></div>
-        <div class="grid-container" id="bugGrid"></div>
+        <div class="sample-screen-container">
+            <div class="sample-header">
+                <button class="undo-btn" id="undoButton">Undo</button>
+                <div class="sample-name" id="sample-name-1"></div>
+                <div id="timer"></div>
+            </div>
+            <div class="grid-container" id="bugGrid"></div>
+        </div>
     </div>
 
     <div class="screen" data-screen="comments-screen" data-active="false">
