@@ -1,6 +1,6 @@
 import { BugInterface } from "./types.js";
 
-export const SITES = ['Revadim North', 'Revadim East', 'Revadim South', 'Galon East', 'Galon West', 'Mishmar Hanegev'];
+export const SITES = ['Revadim north', 'Revadim east', 'Revadim south', 'Galon east', 'Galon west', 'Mishmar hanegev'];
 export const TREATMENTS = ['Control', 'High variety mix', 'Low variety mix'];
 export const SAMPLE_SIDES = ['sunny', 'shady'];
 

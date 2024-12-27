@@ -91,12 +91,13 @@ export class ScreenManager {
         this.setupSampleSelection();
     }
     setupSampleSelection() {
-        // this can be more efficient, not re-rendering the whole grid every time
-        let sampleSelectionElement = document.getElementById('sample-selection-grid');
         const sessionSetup = this.stateManager.getSetup();
-        let sampleAmount = sessionSetup.sampleAmount;
+        let sampleSelectionTitle = document.getElementById('sample-selection-title');
+        sampleSelectionTitle.textContent = `${sessionSetup.site}, ${sessionSetup.treatment}`;
+        // This could be more efficient but it's fine.
+        let sampleSelectionElement = document.getElementById('sample-selection-grid');
         const completionGrid = this.stateManager.getCompletionGrid();
-        populateSampleSelectionScreen(sampleSelectionElement, sampleAmount, (row, col) => this.startSample(row, col), completionGrid);
+        populateSampleSelectionScreen(sampleSelectionElement, sessionSetup.sampleAmount, (row, col) => this.startSample(row, col), completionGrid);
         this.showScreen('sample-selection-screen');
     }
     async startSample(row, col) {
