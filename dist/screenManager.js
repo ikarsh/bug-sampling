@@ -135,7 +135,7 @@ export class ScreenManager {
             counts: this.bugDisplay.getCounts(),
             comments,
         };
-        this.stateManager.setSample(col - 1, row, sample);
+        this.stateManager.setSample(row - 1, col, sample);
         let samples = this.stateManager.getSamples();
         if (this.stateManager.allSamplesCollected()) {
             console.log("All samples collected", samples);
@@ -166,36 +166,35 @@ function populateSampleSelectionScreen(grid, sampleAmount, startSample, completi
     grid.innerHTML = '';
     const cornerCell = document.createElement('div');
     grid.appendChild(cornerCell);
-    // Column numbers
+    SAMPLE_SIDES.forEach(side => {
+        const label = document.createElement('div');
+        label.className = 'col-label';
+        label.textContent = side;
+        grid.appendChild(label);
+    });
     for (let i = 1; i <= sampleAmount; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'col-label';
-        cell.textContent = i.toString();
-        grid.appendChild(cell);
-    }
-    // Row names
-    SAMPLE_SIDES.forEach(row => {
         const label = document.createElement('div');
         label.className = 'row-label';
-        label.textContent = row;
+        label.textContent = i.toString();
         grid.appendChild(label);
-        for (let col = 1; col <= sampleAmount; col++) {
+        SAMPLE_SIDES.forEach(side => {
             const cell = document.createElement('div');
             cell.className = 'sample-cell';
             cell.textContent = `🌳`;
-            if (completionGrid[col - 1][row]) {
+            if (completionGrid[i - 1][side]) {
                 cell.classList.add('completed');
             }
             else {
                 // this is fine as the grid is re-rendered every time. But it is fishy.
                 cell.addEventListener('click', () => {
                     cell.classList.add('completed');
-                    startSample(row, col);
+                    startSample(i - 1, side);
                 }, { once: true });
             }
             grid.appendChild(cell);
-        }
-    });
+        });
+    }
+    ;
 }
 function clean_listeners(element) {
     const clone = element.cloneNode(true);
