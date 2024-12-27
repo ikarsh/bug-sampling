@@ -130,7 +130,7 @@ export class ScreenManager {
 
         // Set the title to the correct sample name.
         let sequence = document.getElementsByClassName('sample-name')
-        let name = `${col}, ${row}`;
+        let name = `${col} ${row}`;
         Array.from(sequence).forEach(e => (e as HTMLElement).textContent = name);
 
         this.showScreen('sample-form-screen');
