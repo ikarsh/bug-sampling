@@ -1,4 +1,4 @@
-import { bugs } from './config.js';
+import { bugs, heb_names } from './config.js';
 export class BugDisplay {
     counts = new Array(bugs.length).fill(0);
     actions = [];
@@ -23,7 +23,7 @@ export class BugDisplay {
         img.alt = bug.name;
         const name = document.createElement('span');
         name.className = 'bug-name';
-        name.textContent = bug.name;
+        name.textContent = heb_names[bug.name];
         const count = document.createElement('span');
         count.className = 'bug-count';
         count.id = `count-${index}`;

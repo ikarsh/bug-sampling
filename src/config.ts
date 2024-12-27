@@ -5,22 +5,34 @@ export const TREATMENTS = ['Control', 'High variety mix', 'Low variety mix'];
 export const SAMPLE_SIDES = ['sunny', 'shady'];
 
 export const bugs: BugInterface[] = [
-    { name: "דבורת דבש", image: "./images/honey-bee.jpg" },
-    { name: "רחפן", image: "./images/syrphidae.jpg" },
-    { name: "קליפטרטה", image: "./images/calyptrata.jpg" },
-
-    { name: "זבוב S", image: "./images/calliphoridae.jpg" },
-    { name: "זבוב M", image: "./images/calliphoridae.jpg" },
-    { name: "זבוב L", image: "./images/calliphoridae.jpg" },
-
-    { name: "דבורת בר S", image: "./images/wild-bee.jpg" },
-    { name: "דבורת בר L", image: "./images/wild-bee.jpg" },
-    { name: "רקבן", image: "./images/eristalinus.jpg" },
-
-    { name: "חיפושית", image: "./images/coleoptera.jpg" },
-    { name: "צרעה", image: "./images/wasp.jpg" },
-    { name: "פרפר", image: "./images/lepidoptera.jpg" },
-
-    { name: "נמלה", image: "./images/ant.jpg" },
-    { name: "אחר", image: "./images/other.jpg" },
+    { name: "Honey bee", image: "./images/honey-bee.jpg" },
+    { name: "Syrphidae", image: "./images/syrphidae.jpg" },
+    { name: "Calyptrata", image: "./images/calyptrata.jpg" },
+    { name: "Calliphoridae S", image: "./images/calliphoridae.jpg" },
+    { name: "Calliphoridae M", image: "./images/calliphoridae.jpg" },
+    { name: "Calliphoridae L", image: "./images/calliphoridae.jpg" },
+    { name: "Wild bee S", image: "./images/wild-bee.jpg" },
+    { name: "Wild bee L", image: "./images/wild-bee.jpg" },
+    { name: "Eristalinus", image: "./images/eristalinus.jpg" },
+    { name: "Coleoptera", image: "./images/coleoptera.jpg" },
+    { name: "Wasp", image: "./images/wasp.jpg" },
+    { name: "Lepidoptera", image: "./images/lepidoptera.jpg" },
+    { name: "Ant", image: "./images/ant.jpg" },
+    { name: "Other", image: "./images/other.jpg" },
 ];
+
+export const heb_names: { [key: string]: string } = {
+    "Honey bee": "דבורת דבש", 
+    "Syrphidae": "רחפן", "Calyptrata": "קליפטרטה", 
+    "Calliphoridae S": "זבוב S", 
+    "Calliphoridae M": "זבוב M", 
+    "Calliphoridae L": "זבוב L", 
+    "Wild bee S": "דבורת בר S", 
+    "Wild bee L": "דבורת בר L", 
+    "Eristalinus": "רקבן", 
+    "Coleoptera": "חיפושית", 
+    "Wasp": "צרעה", 
+    "Lepidoptera": "פרפר", 
+    "Ant": "נמלה", 
+    "Other": "אחר"
+};

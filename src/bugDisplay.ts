@@ -1,4 +1,4 @@
-import { bugs } from './config.js';
+import { bugs, heb_names } from './config.js';
 import { BugInterface } from './types.js';
 
 export class BugDisplay {
@@ -30,7 +30,7 @@ export class BugDisplay {
         
         const name = document.createElement('span');
         name.className = 'bug-name';
-        name.textContent = bug.name;
+        name.textContent = heb_names[bug.name];
         
         const count = document.createElement('span');
         count.className = 'bug-count';
