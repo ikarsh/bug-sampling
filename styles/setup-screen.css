@@ -1,9 +1,9 @@
 /* styles/setup-screen.css */
 .data-form {
     max-width: 500px;  /* Increased to accommodate inline layout */
-    margin: 20px auto;
+    margin: 20px auto; /* centers the form */
     padding: 20px;
-    background: #fff;
+    background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -35,9 +35,6 @@
     font-size: 14px;
 }
 
-.form-group input[type="text"] {
-    width: 100%;
-}
 
 .form-group input[type="number"] {
     width: 80px;
@@ -64,10 +61,3 @@
 .data-form button:hover {
     background: #45a049;  /* Slightly darker shade of green */
 }
-
-
-/* in setup-screen.css */
-/* #sample-name-0 { */
-    /* if you need specific setup screen positioning */
-    /* margin-bottom: 20px; */
-/* } */
