@@ -103,11 +103,11 @@
     background: #ff0000;
 }
 
-#sample-name-1 {
+/* #sample-name-1 {
     flex: 1;
     text-align: center;
     margin: 0;
-}
+} */
 
 /* Responsive grid layouts */
 @media (min-width: 769px) {

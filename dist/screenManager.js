@@ -104,7 +104,7 @@ export class ScreenManager {
         console.log(`Starting sample ${row}${col}`);
         // Set the title to the correct sample name.
         let sequence = document.getElementsByClassName('sample-name');
-        let name = `${col} ${row}`;
+        let name = `${col} ${row + 1}`;
         Array.from(sequence).forEach(e => e.textContent = name);
         this.showScreen('sample-form-screen');
         let sample_setup = await awaitForm('sampleForm', () => {
@@ -135,7 +135,7 @@ export class ScreenManager {
             counts: this.bugDisplay.getCounts(),
             comments,
         };
-        this.stateManager.setSample(row - 1, col, sample);
+        this.stateManager.setSample(row, col, sample);
         let samples = this.stateManager.getSamples();
         if (this.stateManager.allSamplesCollected()) {
             console.log("All samples collected", samples);

@@ -133,7 +133,7 @@ export class ScreenManager {
 
         // Set the title to the correct sample name.
         let sequence = document.getElementsByClassName('sample-name')
-        let name = `${col} ${row}`;
+        let name = `${col} ${row + 1}`;
         Array.from(sequence).forEach(e => (e as HTMLElement).textContent = name);
 
         this.showScreen('sample-form-screen');
@@ -172,7 +172,7 @@ export class ScreenManager {
             comments,
         } as Sample;
 
-        this.stateManager.setSample(row - 1, col, sample);
+        this.stateManager.setSample(row, col, sample);
         let samples = this.stateManager.getSamples();
         if (this.stateManager.allSamplesCollected()) {
             console.log("All samples collected", samples);
