@@ -1,5 +1,6 @@
 import { SITES, TREATMENTS } from "./config.js";
 import { ScreenManager } from "./screenManager.js";
+import { LocationTracker } from "./utils/locationTracker.js";
 
 
 // populate session form dropdowns
@@ -23,11 +24,12 @@ TREATMENTS.forEach(treatment => {
 
 // set date and time
 
-const dateInput = document.getElementById('samplingDate') as HTMLInputElement;
-const hourInput = document.getElementById('samplingHour') as HTMLInputElement;
 
 const updateDateTime = () => {
     const now = new Date();
+    const dateInput = document.getElementById('samplingDate') as HTMLInputElement;
+    const hourInput = document.getElementById('samplingHour') as HTMLInputElement;
+    
     dateInput.value = now.toLocaleDateString();
     hourInput.value = now.toLocaleTimeString();
 };

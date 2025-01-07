@@ -3,24 +3,26 @@ import { Location, Coordinates } from '../types.js';
 export class LocationTracker {
     private watchId: number | null = null;
     private currentLocation: Location = 'N/A';
-    private locationInput: HTMLInputElement;
-    private statusSpan: HTMLSpanElement;
+
+    updateLocationInput(s: string, spn: string) {
+        let locationInput = document.getElementById('location') as HTMLInputElement;
+        locationInput.value = s;
+        let statusSpan = document.getElementById('locationStatus') as HTMLSpanElement;
+        statusSpan.textContent = spn;
+    }
 
     constructor() {
-        this.locationInput = document.getElementById('location') as HTMLInputElement;
-        this.statusSpan = document.getElementById('locationStatus') as HTMLSpanElement;
         this.initializeLocation();
         this.startTracking();
     }
 
     private initializeLocation() {
-        this.locationInput.value = 'N/A';
-        this.statusSpan.textContent = '(No location available)';
+        this.updateLocationInput('N/A', '(No location available)');
     }
 
     private startTracking() {
         if (!('geolocation' in navigator)) {
-            this.statusSpan.textContent = '(Geolocation not supported)';
+            this.updateLocationInput('N/A', '(Geolocation not supported)');
             return;
         }
 
@@ -36,14 +38,12 @@ export class LocationTracker {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
         };
-        this.locationInput.value = `${this.currentLocation.latitude.toFixed(6)}, ${this.currentLocation.longitude.toFixed(6)}`;
-        this.statusSpan.textContent = '✓';
+        this.updateLocationInput(`${this.currentLocation.latitude.toFixed(6)}, ${this.currentLocation.longitude.toFixed(6)}`, '✓');
     }
 
     private handleError(error: GeolocationPositionError) {
         this.currentLocation = 'N/A';
-        this.locationInput.value = 'N/A';
-        this.statusSpan.textContent = `(No location available)`;
+        this.updateLocationInput('N/A', '(Error getting location)');
     }
 
     public getCurrentLocation(): Location {

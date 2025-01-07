@@ -16,10 +16,10 @@ TREATMENTS.forEach(treatment => {
     treatmentSelect.appendChild(option);
 });
 // set date and time
-const dateInput = document.getElementById('samplingDate');
-const hourInput = document.getElementById('samplingHour');
 const updateDateTime = () => {
     const now = new Date();
+    const dateInput = document.getElementById('samplingDate');
+    const hourInput = document.getElementById('samplingHour');
     dateInput.value = now.toLocaleDateString();
     hourInput.value = now.toLocaleTimeString();
 };

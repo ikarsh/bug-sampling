@@ -131,11 +131,11 @@
     }
 
     .bug-name {
-        font-size: 10px;
+        font-size: 20px;
     }
 
     .bug-count {
-        font-size: 14px;
+        font-size: 20px;
     }
 
     .undo-btn {
@@ -155,20 +155,5 @@
 
     .sample-screen-container {
         padding-top: 60px;
-    }
-}
-
-/* In very small screens, make everything even more compact */
-@media (max-width: 360px) {
-    .grid-container {
-        gap: 4px;
-    }
-
-    .bug-cell {
-        padding: 2px;
-    }
-
-    .bug-name {
-        font-size: 9px;
     }
 }
