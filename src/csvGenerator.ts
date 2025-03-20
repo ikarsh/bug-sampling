@@ -60,7 +60,7 @@ export async function generateAndDownloadCsv(setup: SessionSetup, samples: Recor
     const csv = BOM + [headers, ...rows].join('\n');
     
     // Create blob
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const blob = new Blob([new TextEncoder().encode(csv)], { type: 'text/csv;charset=utf-8' });
     const filename = `bugs_${setup.site}_${setup.treatment}_${new Date().toISOString().split('T')[0]}.csv`;
     // seems we can't set file names for the download in ios. ridiculus
     const url = URL.createObjectURL(blob);
