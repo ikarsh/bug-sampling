@@ -64,7 +64,9 @@ export async function generateAndDownloadCsv(setup: SessionSetup, samples: Recor
     const filename = `bugs_${setup.site}_${setup.treatment}_${new Date().toISOString().split('T')[0]}.csv`;
     // seems we can't set file names for the download in ios. ridiculus
     const url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
+    if (confirm('CLICK DOWNLOAD NOW TO NOT LOSE THE FILE!')) {
+        window.open(url, '_blank');
+    }
 
 
     //     // Check if we're on iOS
